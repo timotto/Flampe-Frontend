@@ -1,0 +1,9 @@
+<md-divider ng-if="item.type == 'divider'">
+</md-divider>
+<md-list-item class="md-2-line" href="{{item.link}}" ng-if="!(item.type == 'divider')">
+  <md-icon md-svg-icon="{{item.icon}}" class="avatar"></md-icon>
+  <div class="md-list-item-text">
+    <h3>{{item.title}}</h3>
+    <p>{{item.text}}</p>
+  </div>
+</md-list-item>

@@ -1,0 +1,56 @@
+<md-content class="md-padding" layout-xs="column" layout="row">
+  <div flex-xs flex-gt-xs="50" layout="column">
+    <md-card>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Brightness</span>
+          <span class="md-subhead"></span>
+        </md-card-title-text>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button>100%</md-button>
+          <md-button>Off</md-button>
+        </md-card-actions>
+      </md-card-title>
+      <md-card-content>
+        <md-slider-container>
+          <span>R</span>
+          <md-slider flex ng-model="brightness" min="0" max="100" aria-label="brightness" id="brightness-slider">
+          </md-slider>
+          <md-input-container>
+            <input ng-model="brightness" flex type="number" aria-label="brightness" aria-controls="brightness-slider">
+          </md-input-container>
+        </md-slider-container>
+      </md-card-content>
+    </md-card>
+    <md-card>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Primary color</span>
+          <span class="md-subhead">You see this often</span>
+        </md-card-title-text>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button>Load</md-button>
+          <md-button>Save</md-button>
+        </md-card-actions>
+      </md-card-title>
+      <md-card-content>
+        <color-selector color="colorPrimary"></color-selector>
+      </md-card-content>
+    </md-card>
+    <md-card>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Secondary color</span>
+          <span class="md-subhead">You see this in animations</span>
+        </md-card-title-text>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button>Load</md-button>
+          <md-button>Save</md-button>
+        </md-card-actions>
+      </md-card-title>
+      <md-card-content>
+        <color-selector color="colorAccent"></color-selector>
+      </md-card-content>
+    </md-card>
+  </div>
+</md-content>

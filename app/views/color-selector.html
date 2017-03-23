@@ -1,0 +1,30 @@
+<h3>
+  RGB <span ng-attr-style="border: 1px solid #333; background: rgb({{color.red}},{{color.green}},{{color.blue}})">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+</h3>
+
+<md-slider-container>
+  <span>R</span>
+  <md-slider flex min="0" max="255" ng-model="color.red" aria-label="red" id="red-slider">
+  </md-slider>
+  <md-input-container>
+    <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="red-slider">
+  </md-input-container>
+</md-slider-container>
+
+<md-slider-container>
+  <span>G</span>
+  <md-slider flex ng-model="color.green" min="0" max="255" aria-label="green" id="green-slider" class="md-accent">
+  </md-slider>
+  <md-input-container>
+    <input flex type="number" ng-model="color.green" aria-label="green" aria-controls="green-slider">
+  </md-input-container>
+</md-slider-container>
+
+<md-slider-container>
+  <span class="md-body-1">B</span>
+  <md-slider flex ng-model="color.blue" min="0" max="255" aria-label="blue" id="blue-slider" class="md-primary">
+  </md-slider>
+  <md-input-container>
+    <input flex type="number" ng-model="color.blue" aria-label="blue" aria-controls="blue-slider">
+  </md-input-container>
+</md-slider-container>

@@ -1,0 +1,55 @@
+<md-content class="md-padding" layout-xs="column" layout="row">
+  <div flex-xs flex-gt-xs="50" layout="column">
+    <md-card>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Current animation</span>
+          <span class="md-subhead">View and modify the current animation</span>
+        </md-card-title-text>
+      </md-card-title>
+      <md-card-content>
+        <md-select ng-model="animation.animationCurrent" aria-label="animation-current">
+          <md-option>Solid color / no animation</md-option>
+          <md-option>Fire</md-option>
+          <md-option>Pulse</md-option>
+          <md-option>Juggle</md-option>
+          <md-option>Rainbow</md-option>
+        </md-select>
+
+      </md-card-content>
+    </md-card>
+    <md-card>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Idle animation</span>
+          <span class="md-subhead">The idle animation will play after some time</span>
+        </md-card-title-text>
+      </md-card-title>
+      <md-card-content>
+        <md-select ng-model="animation.animationIdle" aria-label="animation-idle">
+          <md-option>Solid color / no animation</md-option>
+          <md-option>Fire</md-option>
+          <md-option>Pulse</md-option>
+          <md-option>Juggle</md-option>
+          <md-option>Rainbow</md-option>
+        </md-select>
+        <md-slider-container>
+          <span>Brightness</span>
+          <md-slider flex min="0" max="255" ng-model="color.red" aria-label="red" id="red-slider">
+          </md-slider>
+          <md-input-container>
+            <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="red-slider">
+          </md-input-container>
+        </md-slider-container>
+        <md-slider-container>
+          <span>Timeout</span>
+          <md-slider flex min="0" max="255" ng-model="color.red" aria-label="red" id="red-slider">
+          </md-slider>
+          <md-input-container>
+            <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="red-slider">
+          </md-input-container>
+        </md-slider-container>
+      </md-card-content>
+    </md-card>
+  </div>
+</md-content>
