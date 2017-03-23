@@ -1,23 +1,46 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo, WiFi!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
-
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
-</div>
+<md-content class="md-padding" layout-xs="column" layout="row">
+  <div flex-xs flex-gt-xs="50" layout="column">
+    <md-card>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">WiFi client</span>
+          <span class="md-subhead">Connect to your home WiFi</span>
+        </md-card-title-text>
+        <md-card-title-media>
+          <img src="../images/ic_wifi_lock_black_24px.svg" class="md-media-sm card-media">
+        </md-card-title-media>
+      </md-card-title>
+      <md-card-content>
+        <md-input-container>
+          <label>SSID</label>
+          <input ng-model="wifi.ssid">
+        </md-input-container>
+        <md-input-container>
+          <label>Password</label>
+          <input ng-model="wifi.password">
+        </md-input-container>
+      </md-card-content>
+    </md-card>
+    <md-card>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">WiFi hotspot</span>
+          <span class="md-subhead">Flampe creates this network if none are found</span>
+        </md-card-title-text>
+        <md-card-title-media>
+          <img src="../images/ic_wifi_tethering_black_24px.svg" class="md-media-sm card-media">
+        </md-card-title-media>
+      </md-card-title>
+      <md-card-content>
+        <md-input-container>
+          <label>SSID</label>
+          <input ng-model="wifi.ssid">
+        </md-input-container>
+        <md-input-container>
+          <label>Password</label>
+          <input ng-model="wifi.password">
+        </md-input-container>
+      </md-card-content>
+    </md-card>
+  </div>
+</md-content>
