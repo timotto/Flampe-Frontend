@@ -108,23 +108,4 @@ angular
       {type:'divider'},
       {title:'Help',link:'#!/help',icon:'help',text:'Find out what\'s possible with your Flampe'}
     ];
-  }])
-  .directive('navMenuItem',function(){
-    return {
-      restrict: 'E',
-      scope: {
-        item: '=item'
-      },
-      templateUrl: 'views/nav-menu-item.html'
-    };
-  })
-  .directive('colorSelector', function(){
-    return {
-      restrict: 'E',
-      scope: {
-        color: '='
-      },
-      templateUrl: 'views/color-selector.html'
-    };
-  })
-;
+  }]);
