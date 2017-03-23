@@ -70,22 +70,22 @@ angular
         redirectTo: '/'
       });
     $mdIconProvider
-      .defaultIconSet('./images/avatars.svg', 128)
-      .icon('help', './images/ic_help_black_24px.svg', 24)
-      .icon('home', './images/ic_home_black_24px.svg', 24)
-      .icon('network_wifi', './images/ic_network_wifi_black_24px.svg', 24)
-      .icon('system_update_alt', './images/ic_system_update_alt_black_24px.svg', 24)
-      .icon('wifi_lock', './images/ic_wifi_lock_black_24px.svg', 24)
-      .icon('wifi_tethering', './images/ic_wifi_tethering_black_24px.svg', 24)
-      .icon('gesture', './images/gesture.svg', 24)
-      .icon('filter_list', './images/filter_list.svg', 24)
-      .icon('color_lens', './images/color_lens.svg', 24)
-      .icon('menu', './images/menu.svg', 24)
-      .icon('share', './images/share.svg', 24)
-      .icon('google_plus', './images/google_plus.svg', 24)
-      .icon('hangouts', './images/hangouts.svg', 24)
-      .icon('twitter', './images/twitter.svg', 24)
-      .icon('phone', './images/phone.svg', 24);
+      .defaultIconSet('images/avatars.svg', 128)
+      .icon('help', 'images/ic_help_black_24px.svg', 24)
+      .icon('home', 'images/ic_home_black_24px.svg', 24)
+      .icon('network_wifi', 'images/ic_network_wifi_black_24px.svg', 24)
+      .icon('system_update_alt', 'images/ic_system_update_alt_black_24px.svg', 24)
+      .icon('wifi_lock', 'images/ic_wifi_lock_black_24px.svg', 24)
+      .icon('wifi_tethering', 'images/ic_wifi_tethering_black_24px.svg', 24)
+      .icon('gesture', 'images/gesture.svg', 24)
+      .icon('filter_list', 'images/filter_list.svg', 24)
+      .icon('color_lens', 'images/color_lens.svg', 24)
+      .icon('menu', 'images/menu.svg', 24)
+      .icon('share', 'images/share.svg', 24)
+      .icon('google_plus', 'images/google_plus.svg', 24)
+      .icon('hangouts', 'images/hangouts.svg', 24)
+      .icon('twitter', 'images/twitter.svg', 24)
+      .icon('phone', 'images/phone.svg', 24);
 
     // $mdThemingProvider.theme('default')
     //   .primaryPalette('green')
@@ -115,7 +115,7 @@ angular
       scope: {
         item: '=item'
       },
-      templateUrl: './views/nav-menu-item.html'
+      templateUrl: 'views/nav-menu-item.html'
     };
   })
   .directive('colorSelector', function(){
@@ -124,7 +124,7 @@ angular
       scope: {
         color: '='
       },
-      templateUrl: './views/color-selector.html'
+      templateUrl: 'views/color-selector.html'
     };
   })
 ;
