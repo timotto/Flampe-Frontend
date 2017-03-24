@@ -11,6 +11,7 @@
 angular
   .module('flampeFrontendAngularApp', [
     'ngMaterial',
+    'pascalprecht.translate',
     'ngAnimate',
     'ngAria',
     'ngCookies',
@@ -19,7 +20,7 @@ angular
     'ngRoute',
     'ngSanitize'
   ])
-  .config(function ($routeProvider,$mdIconProvider) { // $mdThemingProvider
+  .config(['$routeProvider','$mdIconProvider','$translateProvider',function ($routeProvider,$mdIconProvider,$translateProvider) { // $mdThemingProvider
     $routeProvider
       .when('/control', {
         templateUrl: 'views/color.html',
@@ -77,26 +78,31 @@ angular
       .icon('share', 'images/share.svg', 24)
       .icon('mail', 'images/ic_email_black_24px.svg', 24)
       .icon('security', 'images/ic_security_black_24px.svg', 24);
+    // $translateProvider.preferredLanguage('en');
+    $translateProvider
+      .uniformLanguageTag('bcp47')
+      .determinePreferredLanguage()
+      .fallbackLanguage('en-GB');
 
     // $mdThemingProvider.theme('default')
     //   .primaryPalette('green')
     //   .accentPalette('yellow');
 
-  })
+  }])
   .controller('NavigationController',['$scope','$mdSidenav',function($scope,$mdSidenav){
     $scope.toggleMenu = function() {
       $mdSidenav('left').toggle();
     };
 
     $scope.menu = [
-      {title:'Controls',link:'#!/control',icon:'color_lens',text:'Adjust the brightness and base colors'},
-      {title:'Animation',link:'#!/animation',icon:'filter_list',text:'Animations change hue and brightness in patterns over time'},
+      {textkey:'CONTROLS',link:'#!/control',icon:'color_lens'},
+      {textkey:'ANIMATION',link:'#!/animation',icon:'filter_list'},
       {type:'divider'},
-      {title:'Gestures',link:'#!/gesture',icon:'gesture',text:'Configure the motion sensor'},
-      {title:'WiFi',link:'#!/wifi',icon:'network_wifi',text:'Set up WiFi parameters'},
-      {title:'MQTT',link:'#!/mqtt',icon:'home',text:'Integrate Flampe into your home automation setup'},
-      {title:'Update',link:'#!/update',icon:'system_update_alt',text:'Update the Flampe firmware'},
+      {textkey:'GESTURE',link:'#!/gesture',icon:'gesture'},
+      {textkey:'WIFI',link:'#!/wifi',icon:'network_wifi'},
+      {textkey:'MQTT',link:'#!/mqtt',icon:'home'},
+      {textkey:'UPDATE',link:'#!/update',icon:'system_update_alt'},
       {type:'divider'},
-      {title:'Help',link:'#!/help',icon:'help',text:'Find out what\'s possible with your Flampe'}
+      {textkey:'HELP',link:'#!/help',icon:'help'}
     ];
   }]);

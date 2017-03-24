@@ -7,7 +7,11 @@
   md-colors="{{currentItem(item.link)?'{background: \'primary-100-0.5\'}':''}}"
 >
   <md-icon md-svg-icon="{{item.icon}}" class="avatar"></md-icon>
-  <div class="md-list-item-text">
+  <div class="md-list-item-text" ng-if="item.textkey">
+    <h3>{{item.textkey | translate}}</h3>
+    <p>{{item.textkey+'_TEXT' | translate}}</p>
+  </div>
+  <div class="md-list-item-text" ng-if="!item.textkey">
     <h3>{{item.title}}</h3>
     <p>{{item.text}}</p>
   </div>

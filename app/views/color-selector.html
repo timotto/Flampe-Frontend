@@ -1,9 +1,9 @@
 <h3>
-  RGB <span ng-attr-style="border: 1px solid #333; background: rgb({{color.red}},{{color.green}},{{color.blue}})">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  {{'RGB' | translate}} <span ng-attr-style="border: 1px solid #333; background: rgb({{color.red}},{{color.green}},{{color.blue}})">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 </h3>
 
 <md-slider-container>
-  <span>R</span>
+  <span>{{'COLOR_RED_SHORT' | translate}}</span>
   <md-slider flex min="0" max="255" ng-model="color.red" aria-label="red" id="red-slider">
   </md-slider>
   <md-input-container>
@@ -12,7 +12,7 @@
 </md-slider-container>
 
 <md-slider-container>
-  <span>G</span>
+  <span>{{'COLOR_GREEN_SHORT' | translate}}</span>
   <md-slider flex ng-model="color.green" min="0" max="255" aria-label="green" id="green-slider" class="md-accent">
   </md-slider>
   <md-input-container>
@@ -21,7 +21,7 @@
 </md-slider-container>
 
 <md-slider-container>
-  <span class="md-body-1">B</span>
+  <span class="md-body-1">{{'COLOR_BLUE_SHORT' | translate}}</span>
   <md-slider flex ng-model="color.blue" min="0" max="255" aria-label="blue" id="blue-slider" class="md-primary">
   </md-slider>
   <md-input-container>

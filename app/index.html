@@ -27,7 +27,7 @@
                    aria-label="Show User List">
           <md-icon md-svg-icon="menu"></md-icon>
         </md-button>
-        <h1 md-truncate flex>Flampe</h1>
+        <h1 md-truncate flex>{{ 'TITLE' | translate}}</h1>
       </div>
     </md-toolbar>
 
@@ -39,7 +39,7 @@
                   md-component-id="left" flex>
         <md-toolbar layout="row" ng-click="toggleMenu()" hide-gt-sm>
           <div class="md-toolbar-tools">
-            <h1 md-truncate flex>Flampe</h1>
+            <h1 md-truncate flex>{{ 'TITLE' | translate}}</h1>
           </div>
         </md-toolbar>
         <md-content flex>
@@ -69,11 +69,14 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-material/angular-material.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/i18n/en.js"></script>
+        <script src="scripts/i18n/de.js"></script>
         <script src="scripts/controllers/color.js"></script>
         <script src="scripts/controllers/animation.js"></script>
         <script src="scripts/controllers/gesture.js"></script>

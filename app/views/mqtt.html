@@ -1,44 +1,45 @@
 <md-card>
   <md-card-title>
     <md-card-title-text>
-      <span class="md-headline">MQTT Server</span>
-      <span class="md-subhead">Gateway parameters</span>
+      <span class="md-headline">{{'MQTT_SERVER_TITLE'|translate}}</span>
+      <span class="md-subhead">{{'MQTT_SERVER_TEXT'|translate}}</span>
     </md-card-title-text>
     <md-card-title-media>
       <md-icon md-svg-icon="cloud" class="md-media-sm card-media"></md-icon>
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
+    <p>{{'MQTT_SERVER_CONTENT'|translate}}</p>
     <div layout="row" layout-xs="column">
       <md-input-container flex="50">
-        <label>Hostname</label>
+        <label>{{'HOSTNAME'|translate}}</label>
         <input ng-model="mqtt.host">
       </md-input-container>
       <md-input-container flex="50">
-        <label>Port</label>
+        <label>{{'PORT'|translate}}</label>
         <input ng-model="mqtt.port">
       </md-input-container>
     </div>
     <div layout="row" layout-xs="column">
       <md-input-container flex="50">
-        <label>Login</label>
+        <label>{{'LOGIN'|translate}}</label>
         <input ng-model="mqtt.login">
       </md-input-container>
       <md-input-container flex="50">
-        <label>Password</label>
+        <label>{{'PASSWORD'|translate}}</label>
         <input ng-model="mqtt.password">
       </md-input-container>
     </div>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button>Save</md-button>
+    <md-button>{{'SAVE'|translate}}</md-button>
   </md-card-actions>
 </md-card>
 <md-card>
   <md-card-title>
     <md-card-title-text>
-      <span class="md-headline">Subjects</span>
-      <span class="md-subhead">Message parameters</span>
+      <span class="md-headline">{{'MQTT_MSG_TITLE'|translate}}</span>
+      <span class="md-subhead">{{'MQTT_MSG_TEXT'|translate}}</span>
     </md-card-title-text>
     <md-card-title-media>
       <md-icon md-svg-icon="linear_scale" class="md-media-sm card-media"></md-icon>
@@ -46,30 +47,30 @@
   </md-card-title>
   <md-card-content layout="column">
     <md-input-container>
-      <label>Device name</label>
+      <label>{{'DEVICE_NAME'|translate}}</label>
       <input ng-model="mqtt.name">
     </md-input-container>
     <md-checkbox name="listenCommands" ng-model="mqtt.listen.commands">
-      Listen for commands
+      {{'MQTT_MSG_LISTEN'|translate}}
     </md-checkbox>
     <md-input-container>
-      <label>in topic</label>
+      <label>{{'MQTT_MSG_INTOPIC'|translate}}</label>
       <input ng-model="mqtt.intopic">
     </md-input-container>
 
     <md-checkbox name="publishState" ng-model="mqtt.publish.state">
-      Publish general state
+      {{'MQTT_MSG_PUB_STATE'|translate}}
     </md-checkbox>
     <md-checkbox name="publishGesture" ng-model="mqtt.publish.gesture">
-      Publish gestures
+      {{'MQTT_MSG_PUB_GESTURE'|translate}}
     </md-checkbox>
 
     <md-input-container>
-      <label>out topic</label>
+      <label>{{'MQTT_MSG_OUTTOPIC'|translate}}</label>
       <input ng-model="mqtt.outtopic">
     </md-input-container>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button>Save</md-button>
+    <md-button>{{'SAVE'|translate}}</md-button>
   </md-card-actions>
 </md-card>
