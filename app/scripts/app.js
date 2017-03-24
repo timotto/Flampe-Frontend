@@ -60,7 +60,6 @@ angular
         redirectTo: '/control'
       });
     $mdIconProvider
-      .defaultIconSet('images/avatars.svg', 128)
       .icon('help', 'images/ic_help_black_24px.svg', 24)
       .icon('home', 'images/ic_home_black_24px.svg', 24)
       .icon('network_wifi', 'images/ic_network_wifi_black_24px.svg', 24)
@@ -76,10 +75,7 @@ angular
       .icon('linear_scale', 'images/ic_linear_scale_black_24px.svg', 24)
       .icon('menu', 'images/menu.svg', 24)
       .icon('share', 'images/share.svg', 24)
-      .icon('google_plus', 'images/google_plus.svg', 24)
-      .icon('hangouts', 'images/hangouts.svg', 24)
-      .icon('twitter', 'images/twitter.svg', 24)
-      .icon('phone', 'images/phone.svg', 24);
+      .icon('mail', 'images/mail.svg', 24);
 
     // $mdThemingProvider.theme('default')
     //   .primaryPalette('green')
