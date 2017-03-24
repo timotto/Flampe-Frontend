@@ -21,12 +21,7 @@ angular
   ])
   .config(function ($routeProvider,$mdIconProvider) { // $mdThemingProvider
     $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl',
-        controllerAs: 'main'
-      })
-      .when('/color', {
+      .when('/control', {
         templateUrl: 'views/color.html',
         controller: 'ColorCtrl',
         controllerAs: 'color'
@@ -61,13 +56,8 @@ angular
         controller: 'HelpCtrl',
         controllerAs: 'help'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl',
-        controllerAs: 'about'
-      })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/control'
       });
     $mdIconProvider
       .defaultIconSet('images/avatars.svg', 128)
@@ -102,7 +92,7 @@ angular
     };
 
     $scope.menu = [
-      {title:'Controls',link:'#!/color',icon:'color_lens',text:'Adjust the brightness and base colors'},
+      {title:'Controls',link:'#!/control',icon:'color_lens',text:'Adjust the brightness and base colors'},
       {title:'Animation',link:'#!/animation',icon:'filter_list',text:'Animations change hue and brightness in patterns over time'},
       {type:'divider'},
       {title:'Gestures',link:'#!/gesture',icon:'gesture',text:'Configure the motion sensor'},
