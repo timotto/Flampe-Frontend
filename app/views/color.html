@@ -6,10 +6,9 @@
           <span class="md-headline">Brightness</span>
           <span class="md-subhead"></span>
         </md-card-title-text>
-        <md-card-actions layout="row" layout-align="end center">
-          <md-button>100%</md-button>
-          <md-button>Off</md-button>
-        </md-card-actions>
+        <md-card-title-media>
+          <md-icon md-svg-icon="brightness" class="md-media-sm card-media"></md-icon>
+        </md-card-title-media>
       </md-card-title>
       <md-card-content>
         <md-slider-container>
@@ -21,6 +20,10 @@
           </md-input-container>
         </md-slider-container>
       </md-card-content>
+      <md-card-actions layout="row" layout-align="end center">
+        <md-button>100%</md-button>
+        <md-button>Off</md-button>
+      </md-card-actions>
     </md-card>
     <md-card>
       <md-card-title>
@@ -28,14 +31,17 @@
           <span class="md-headline">Primary color</span>
           <span class="md-subhead">You see this often</span>
         </md-card-title-text>
-        <md-card-actions layout="row" layout-align="end center">
-          <md-button>Load</md-button>
-          <md-button>Save</md-button>
-        </md-card-actions>
+        <md-card-title-media>
+          <md-icon md-svg-icon="color_lens" class="md-media-sm card-media"></md-icon>
+        </md-card-title-media>
       </md-card-title>
       <md-card-content>
         <fl-color-selector color="colorPrimary"></fl-color-selector>
       </md-card-content>
+      <md-card-actions layout="row" layout-align="end center">
+        <md-button>Load</md-button>
+        <md-button>Save</md-button>
+      </md-card-actions>
     </md-card>
     <md-card>
       <md-card-title>
@@ -43,14 +49,17 @@
           <span class="md-headline">Secondary color</span>
           <span class="md-subhead">You see this in animations</span>
         </md-card-title-text>
-        <md-card-actions layout="row" layout-align="end center">
-          <md-button>Load</md-button>
-          <md-button>Save</md-button>
-        </md-card-actions>
+        <md-card-title-media>
+          <md-icon md-svg-icon="color_lens" class="md-media-sm card-media"></md-icon>
+        </md-card-title-media>
       </md-card-title>
       <md-card-content>
         <fl-color-selector color="colorAccent"></fl-color-selector>
       </md-card-content>
+      <md-card-actions layout="row" layout-align="end center">
+        <md-button>Load</md-button>
+        <md-button>Save</md-button>
+      </md-card-actions>
     </md-card>
   </div>
 </md-content>
