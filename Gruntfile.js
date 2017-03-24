@@ -375,6 +375,21 @@ module.exports = function (grunt) {
       }
     },
 
+    // gzip dist 1-to-1 for ESP8266 SPIFFS WebServer
+    compress: {
+      main: {
+        options: {
+          mode: 'gzip'
+        },
+        expand: true,
+        cwd: '<%= yeoman.dist %>/',
+        src: ['**/*'],
+        rename: function (dest, src) {
+          return 'compressed/' + src + '.gz';
+        }
+      }
+    },
+
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -473,7 +488,8 @@ module.exports = function (grunt) {
     'uglify',
     'filerev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'compress'
   ]);
 
   grunt.registerTask('default', [
