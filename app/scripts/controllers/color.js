@@ -9,20 +9,20 @@
  */
 angular.module('flampeFrontendAngularApp')
   .controller('ColorCtrl', ['$scope',function ($scope) {
+    function randomColor() {
+      var color = {
+        red: Math.floor(Math.random() * 255),
+        green: Math.floor(Math.random() * 255),
+        blue: Math.floor(Math.random() * 255)
+      };
+      return color;
+    }
+
     $scope.brightness = Math.floor(Math.random() * 100);
-    $scope.colorPrimary = {
-      red: Math.floor(Math.random() * 255),
-      green: Math.floor(Math.random() * 255),
-      blue: Math.floor(Math.random() * 255)
+    $scope.primary=randomColor();
+    $scope.accent=randomColor();
+
+    $scope.randomizeColor = function(name) {
+      $scope[name] = randomColor();
     };
-    $scope.colorAccent = {
-      red: Math.floor(Math.random() * 255),
-      green: Math.floor(Math.random() * 255),
-      blue: Math.floor(Math.random() * 255)
-    };
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
   }]);

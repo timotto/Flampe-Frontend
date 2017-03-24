@@ -95,6 +95,7 @@ angular.module('flampeFrontendAngularApp')
       ANIM_PULSE: 'Pulse',
       ANIM_JUGGLE: 'Juggle',
       ANIM_RAINBOW: 'Rainbow',
+      RANDOMIZE: 'Randomize',
       BUTTON_LANG_EN: 'English',
       BUTTON_LANG_DE: 'German'
     });

@@ -95,6 +95,7 @@ angular.module('flampeFrontendAngularApp')
       ANIM_PULSE: 'Puls',
       ANIM_JUGGLE: 'Jonglieren',
       ANIM_RAINBOW: 'Regenbogen',
+      RANDOMIZE: 'Zufällig',
       BUTTON_LANG_EN: 'englisch',
       BUTTON_LANG_DE: 'deutsch'
     });

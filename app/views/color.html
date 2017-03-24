@@ -19,8 +19,8 @@
     </md-slider-container>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button>{{'BRIGHTNESS_FULL' | translate}}</md-button>
-    <md-button>{{'BRIGHTNESS_OFF' | translate}}</md-button>
+    <md-button ng-click="brightness = 0">{{'BRIGHTNESS_OFF' | translate}}</md-button>
+    <md-button ng-click="brightness = 100">{{'BRIGHTNESS_FULL' | translate}}</md-button>
   </md-card-actions>
 </md-card>
 <md-card>
@@ -34,8 +34,11 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <fl-color-selector color="colorPrimary"></fl-color-selector>
+    <fl-color-selector color="primary"></fl-color-selector>
   </md-card-content>
+  <md-card-actions layout="row" layout-align="end center">
+    <md-button ng-click="randomizeColor('primary')">{{'RANDOMIZE' | translate}}</md-button>
+  </md-card-actions>
 </md-card>
 <md-card>
   <md-card-title>
@@ -48,6 +51,9 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <fl-color-selector color="colorAccent"></fl-color-selector>
+    <fl-color-selector color="accent"></fl-color-selector>
   </md-card-content>
+  <md-card-actions layout="row" layout-align="end center">
+    <md-button ng-click="randomizeColor('accent')">{{'RANDOMIZE' | translate}}</md-button>
+  </md-card-actions>
 </md-card>
