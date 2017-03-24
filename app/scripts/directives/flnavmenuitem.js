@@ -10,7 +10,9 @@ angular.module('flampeFrontendAngularApp')
   .directive('flNavMenuItem', ['$location', function ($location) {
     function link(scope){
       scope.currentItem = function(itemLink) {
-        if (!(itemLink !== undefined)) return false;
+        if (!itemLink) {
+          return false;
+        }
         var pot = '#!'+$location.path();
         return itemLink === pot;
       };
