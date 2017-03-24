@@ -1,6 +1,11 @@
 <md-divider ng-if="item.type == 'divider'">
 </md-divider>
-<md-list-item class="md-2-line" href="{{item.link}}" ng-if="!(item.type == 'divider')">
+<md-list-item
+  class="md-2-line"
+  href="{{item.link}}"
+  ng-if="!(item.type == 'divider')"
+  md-colors="{{currentItem(item.link)?'{background: \'primary-100-0.5\'}':''}}"
+>
   <md-icon md-svg-icon="{{item.icon}}" class="avatar"></md-icon>
   <div class="md-list-item-text">
     <h3>{{item.title}}</h3>
