@@ -15,12 +15,13 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
+  <!-- the layout="column" here makes the toolbar become fixed on top because the content is treated as rows in a column -->
   <body ng-app="flampeFrontendAngularApp" ng-controller="NavigationController as app" layout="column" ng-cloak>
     <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <md-toolbar layout="row" md-scroll-shrink ng-if="true">
+    <md-toolbar layout="row">
       <div class="md-toolbar-tools">
         <md-button class="menu md-icon-button" hide-gt-sm ng-click="toggleMenu()"
                    aria-label="Show User List">
@@ -50,7 +51,6 @@
 
       <!-- Container #4 -->
       <md-content flex id="content">
-        <!-- Custom UserDetails component -->
         <div ng-view></div>
       </md-content>
 
