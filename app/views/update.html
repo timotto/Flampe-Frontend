@@ -9,10 +9,18 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <p>{{'UPDATE_CONTENT'|translate}}</p>
-    <p>{{'UPDATE_CONTENT_UPDATES'|translate}}</p>
+    <p>{{'UPDATE_CONTENT'|translate:textValues}}</p>
+    <p>{{status|translate}}</p>
+    <md-progress-linear class="md-warn" md-mode="indeterminate"
+                        ng-if="showProgress"
+                        ng-disabled="!enableProgress"></md-progress-linear>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button>{{'UPDATE_RECHECK'|translate}}</md-button>
+    <md-button ng-click="check()"
+               ng-if="showCheck"
+               ng-disabled="!enableCheck">{{'UPDATE_RECHECK'|translate}}</md-button>
+    <md-button ng-click="doUpdate()"
+               ng-if="showUpdate"
+               ng-disabled="!enableUpdate">{{'UPDATE'|translate}}</md-button>
   </md-card-actions>
 </md-card>
