@@ -9,8 +9,8 @@
  */
 angular.module('flampeFrontendAngularApp')
   .controller('AnimationCtrl', ['$scope',function ($scope) {
-    $scope.animationCurrent = "";
-    $scope.animationIdle = "";
+    $scope.animationCurrent = '';
+    $scope.animationIdle = '';
 
     this.awesomeThings = [
       'HTML5 Boilerplate',

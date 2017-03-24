@@ -19,7 +19,7 @@ angular
     'ngRoute',
     'ngSanitize'
   ])
-  .config(function ($routeProvider,$mdIconProvider, $mdThemingProvider) {
+  .config(function ($routeProvider,$mdIconProvider) { // $mdThemingProvider
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
