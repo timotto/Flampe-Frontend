@@ -15,17 +15,19 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="flampeFrontendAngularApp" ng-controller="NavigationController as app" ng-cloak>
+  <body ng-app="flampeFrontendAngularApp" ng-controller="NavigationController as app" layout="column" ng-cloak>
     <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <md-toolbar layout="row" class="md-toolbar-tools">
-      <md-button class="menu md-icon-button" hide-gt-sm ng-click="toggleMenu()"
-                 aria-label="Show User List">
-        <md-icon md-svg-icon="menu"></md-icon>
-      </md-button>
-      <h1>Flampe</h1>
+    <md-toolbar layout="row" md-scroll-shrink ng-if="true">
+      <div class="md-toolbar-tools">
+        <md-button class="menu md-icon-button" hide-gt-sm ng-click="toggleMenu()"
+                   aria-label="Show User List">
+          <md-icon md-svg-icon="menu"></md-icon>
+        </md-button>
+        <h1 md-truncate flex>Flampe</h1>
+      </div>
     </md-toolbar>
 
     <!-- Container #2 -->
@@ -33,9 +35,11 @@
 
       <!-- Container #3 -->
       <md-sidenav layout="column" class="md-whiteframe-4dp" md-is-locked-open="$mdMedia('gt-sm')"
-                  md-component-id="left">
+                  md-component-id="left" flex>
         <md-toolbar layout="row" ng-click="toggleMenu()" hide-gt-sm>
-          <span>Flampe</span>
+          <div class="md-toolbar-tools">
+            <h1 md-truncate flex>Flampe</h1>
+          </div>
         </md-toolbar>
         <md-content flex>
           <md-list flex>
