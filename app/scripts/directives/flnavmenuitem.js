@@ -13,8 +13,7 @@ angular.module('flampeFrontendAngularApp')
         if (!itemLink) {
           return false;
         }
-        var pot = '#!'+$location.path();
-        return itemLink === pot;
+        return itemLink === $location.path();
       };
     }
     return {

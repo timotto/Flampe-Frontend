@@ -92,20 +92,29 @@ angular
     //   .accentPalette('yellow');
 
   }])
-  .controller('NavigationController',['$scope','$mdSidenav',function($scope,$mdSidenav){
+  .controller('NavigationController',['$scope','$mdSidenav','$location',function($scope,$mdSidenav,$location){
     $scope.toggleMenu = function() {
       $mdSidenav('left').toggle();
     };
+    $scope.goMenu = function(textkey) {
+      $scope.menu
+        // find textkey
+        .filter(function(item){return textkey === item.textkey;})
+        // need only link
+        .map(function(item){return item.link;})
+        // should be just 1
+        .forEach(function(link){$location.url(link);});
+    };
 
     $scope.menu = [
-      {textkey:'CONTROLS',link:'#!/control',icon:'color_lens'},
-      {textkey:'ANIMATION',link:'#!/animation',icon:'blur_on'},
+      {textkey:'CONTROLS',link:'/control',icon:'color_lens'},
+      {textkey:'ANIMATION',link:'/animation',icon:'blur_on'},
       {type:'divider'},
-      {textkey:'GESTURE',link:'#!/gesture',icon:'gesture'},
-      {textkey:'WIFI',link:'#!/wifi',icon:'network_wifi'},
-      {textkey:'MQTT',link:'#!/mqtt',icon:'home'},
-      {textkey:'UPDATE',link:'#!/update',icon:'system_update_alt'},
+      {textkey:'GESTURE',link:'/gesture',icon:'gesture'},
+      {textkey:'WIFI',link:'/wifi',icon:'network_wifi'},
+      {textkey:'MQTT',link:'/mqtt',icon:'home'},
+      {textkey:'UPDATE',link:'/update',icon:'system_update_alt'},
       {type:'divider'},
-      {textkey:'HELP',link:'#!/help',icon:'help'}
+      {textkey:'HELP',link:'/help',icon:'help'}
     ];
   }]);
