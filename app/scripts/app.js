@@ -75,7 +75,8 @@ angular
       .icon('linear_scale', 'images/ic_linear_scale_black_24px.svg', 24)
       .icon('menu', 'images/menu.svg', 24)
       .icon('share', 'images/share.svg', 24)
-      .icon('mail', 'images/mail.svg', 24);
+      .icon('mail', 'images/ic_email_black_24px.svg', 24)
+      .icon('security', 'images/ic_security_black_24px.svg', 24);
 
     // $mdThemingProvider.theme('default')
     //   .primaryPalette('green')
