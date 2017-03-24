@@ -77,7 +77,10 @@ angular
       .icon('menu', 'images/menu.svg', 24)
       .icon('share', 'images/share.svg', 24)
       .icon('mail', 'images/ic_email_black_24px.svg', 24)
-      .icon('security', 'images/ic_security_black_24px.svg', 24);
+      .icon('security', 'images/ic_security_black_24px.svg', 24)
+      .icon('blur_on', 'images/ic_blur_on_black_24px.svg', 24)
+      .icon('timer', 'images/ic_timer_black_24px.svg', 24)
+      .icon('timelapse', 'images/ic_timelapse_black_24px.svg', 24);
     // $translateProvider.preferredLanguage('en');
     $translateProvider
       .uniformLanguageTag('bcp47')
@@ -96,7 +99,7 @@ angular
 
     $scope.menu = [
       {textkey:'CONTROLS',link:'#!/control',icon:'color_lens'},
-      {textkey:'ANIMATION',link:'#!/animation',icon:'filter_list'},
+      {textkey:'ANIMATION',link:'#!/animation',icon:'blur_on'},
       {type:'divider'},
       {textkey:'GESTURE',link:'#!/gesture',icon:'gesture'},
       {textkey:'WIFI',link:'#!/wifi',icon:'network_wifi'},

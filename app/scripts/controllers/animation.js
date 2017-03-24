@@ -9,8 +9,6 @@
  */
 angular.module('flampeFrontendAngularApp')
   .controller('AnimationCtrl', ['$scope',function ($scope) {
-    $scope.animation = {};
-
     $scope.animations = [
       {textkey:'ANIM_SOLID'},
       {textkey:'ANIM_GRADIENT'},
@@ -31,9 +29,19 @@ angular.module('flampeFrontendAngularApp')
       {textkey:'PALETTE_PARTY'}
     ];
 
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+    function randomOf(a,key){
+      var randomIndex = parseInt(Math.random() * a.length);
+      var randomEntry = a[randomIndex];
+      var randomValue = randomEntry[key];
+      return randomValue;
+    }
+
+    $scope.settings = {
+      current: randomOf($scope.animations,'textkey'),
+      idle: randomOf($scope.animations,'textkey'),
+      paletteCurrent: randomOf($scope.palettes,'textkey'),
+      paletteIdle: randomOf($scope.palettes,'textkey'),
+      idleBrightness: parseInt(Math.random() * 100),
+      idleTimeout: parseInt(Math.random() * 100)
+    };
   }]);
