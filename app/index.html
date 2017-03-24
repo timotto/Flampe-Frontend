@@ -50,8 +50,10 @@
       </md-sidenav>
 
       <!-- Container #4 -->
-      <md-content flex id="content">
-        <div ng-view></div>
+      <md-content class="md-padding" layout-xs="column" layout="row" flex id="content">
+        <div flex-xs flex-gt-md="70" layout="column">
+          <div ng-view></div>
+        </div>
       </md-content>
 
     </div>

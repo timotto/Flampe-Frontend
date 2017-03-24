@@ -1,65 +1,61 @@
-<md-content class="md-padding" layout-xs="column" layout="row">
-  <div flex-xs flex-gt-xs="50" layout="column">
-    <md-card>
-      <md-card-title>
-        <md-card-title-text>
-          <span class="md-headline">MQTT Server</span>
-          <span class="md-subhead">Gateway parameters</span>
-        </md-card-title-text>
-        <md-card-title-media>
-          <md-icon md-svg-icon="cloud" class="md-media-sm card-media"></md-icon>
-        </md-card-title-media>
-      </md-card-title>
-      <md-card-content>
-        <md-input-container>
-          <label>Hostname</label>
-          <input ng-model="mqtt.host">
-        </md-input-container>
-        <md-input-container>
-          <label>Port</label>
-          <input ng-model="mqtt.port">
-        </md-input-container>
-        <md-input-container>
-          <label>Login</label>
-          <input ng-model="mqtt.login">
-        </md-input-container>
-        <md-input-container>
-          <label>Password</label>
-          <input ng-model="mqtt.password">
-        </md-input-container>
-      </md-card-content>
-    </md-card>
-    <md-card>
-      <md-card-title>
-        <md-card-title-text>
-          <span class="md-headline">Subjects</span>
-          <span class="md-subhead">Message parameters</span>
-        </md-card-title-text>
-        <md-card-title-media>
-          <md-icon md-svg-icon="linear_scale" class="md-media-sm card-media"></md-icon>
-        </md-card-title-media>
-      </md-card-title>
-      <md-card-content>
-        <md-input-container>
-          <label>Device name</label>
-          <input ng-model="mqtt.name">
-        </md-input-container>
-        <md-input-container>
-          <label>in topic</label>
-          <input ng-model="mqtt.intopic">
-        </md-input-container>
-        <md-input-container>
-          <label>out topic</label>
-          <input ng-model="mqtt.outtopic">
-        </md-input-container>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">MQTT Server</span>
+      <span class="md-subhead">Gateway parameters</span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <md-icon md-svg-icon="cloud" class="md-media-sm card-media"></md-icon>
+    </md-card-title-media>
+  </md-card-title>
+  <md-card-content>
+    <md-input-container>
+      <label>Hostname</label>
+      <input ng-model="mqtt.host">
+    </md-input-container>
+    <md-input-container>
+      <label>Port</label>
+      <input ng-model="mqtt.port">
+    </md-input-container>
+    <md-input-container>
+      <label>Login</label>
+      <input ng-model="mqtt.login">
+    </md-input-container>
+    <md-input-container>
+      <label>Password</label>
+      <input ng-model="mqtt.password">
+    </md-input-container>
+  </md-card-content>
+</md-card>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Subjects</span>
+      <span class="md-subhead">Message parameters</span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <md-icon md-svg-icon="linear_scale" class="md-media-sm card-media"></md-icon>
+    </md-card-title-media>
+  </md-card-title>
+  <md-card-content>
+    <md-input-container>
+      <label>Device name</label>
+      <input ng-model="mqtt.name">
+    </md-input-container>
+    <md-input-container>
+      <label>in topic</label>
+      <input ng-model="mqtt.intopic">
+    </md-input-container>
+    <md-input-container>
+      <label>out topic</label>
+      <input ng-model="mqtt.outtopic">
+    </md-input-container>
 
-        <md-checkbox name="publishState" ng-model="mqtt.publish.state">
-          Publish general state
-        </md-checkbox>
-        <md-checkbox name="publishGesture" ng-model="mqtt.publish.gesture">
-          Publish gestures
-        </md-checkbox>
-      </md-card-content>
-    </md-card>
-  </div>
-</md-content>
+    <md-checkbox name="publishState" ng-model="mqtt.publish.state">
+      Publish general state
+    </md-checkbox>
+    <md-checkbox name="publishGesture" ng-model="mqtt.publish.gesture">
+      Publish gestures
+    </md-checkbox>
+  </md-card-content>
+</md-card>

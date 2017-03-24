@@ -1,97 +1,92 @@
-<md-content class="md-padding" layout-xs="column" layout="row">
-  <div flex-xs flex-gt-xs="50" layout="column">
-    <md-card>
-      <md-card-title>
-        <md-card-title-text>
-          <span class="md-headline">WiFi client</span>
-          <span class="md-subhead">Connect to your home WiFi</span>
-        </md-card-title-text>
-        <md-card-title-media>
-          <md-icon md-svg-icon="wifi_lock" class="md-media-sm card-media"></md-icon>
-        </md-card-title-media>
-      </md-card-title>
-      <md-card-content>
-        <p>Enter the credentials for your home WiFi to use this web interface and connect your home automation</p>
-        <div layout="row" layout-xs="column">
-          <md-input-container flex="50">
-            <label>SSID</label>
-            <input ng-model="wifi.ssid">
-          </md-input-container>
-          <md-input-container flex="50">
-            <label>Password</label>
-            <input ng-model="wifi.password">
-          </md-input-container>
-        </div>
-      </md-card-content>
-      <md-card-actions layout="row" layout-align="end center">
-        <md-button>Connect</md-button>
-      </md-card-actions>
-    </md-card>
-    <md-card>
-      <md-card-title>
-        <md-card-title-text>
-          <span class="md-headline">WiFi hotspot</span>
-          <span class="md-subhead">Flampe creates this network if none are found</span>
-        </md-card-title-text>
-        <md-card-title-media>
-          <md-icon md-svg-icon="wifi_tethering" class="md-media-sm card-media"></md-icon>
-        </md-card-title-media>
-      </md-card-title>
-      <md-card-content>
-        <p>This will help you set up your Flampe in another environment or when you change your home WiFi.</p>
-        <div layout="row" layout-xs="column">
-          <md-input-container flex="50">
-            <label>SSID</label>
-            <input ng-model="wifi.ssid">
-          </md-input-container>
-          <md-input-container flex="50">
-            <label>Password</label>
-            <input ng-model="wifi.password">
-          </md-input-container>
-        </div>
-      </md-card-content>
-      <md-card-actions layout="row" layout-align="end center">
-        <md-button>Save</md-button>
-      </md-card-actions>
-    </md-card>
-    <md-card>
-      <md-card-title>
-        <md-card-title-text>
-          <span class="md-headline">Passwords</span>
-          <span class="md-subhead">Protect this webinterface</span>
-        </md-card-title-text>
-        <md-card-title-media>
-          <md-icon md-svg-icon="security" class="md-media-sm card-media"></md-icon>
-        </md-card-title-media>
-      </md-card-title>
-      <md-card-content>
-
-        <p>The master login grants access to all controls and settings.</p>
-        <div layout="row">
-          <md-input-container flex="50">
-            <label>Master login</label>
-            <input ng-model="access.master.login">
-          </md-input-container>
-          <md-input-container flex="50">
-            <label>Password</label>
-            <input ng-model="access.master.password">
-          </md-input-container>
-        </div>
-        <p>The viewer password grants access to brightness, color, and animation control.</p>
-        <div layout="row">
-          <md-input-container flex="50">
-            <label>Viewer login</label>
-            <input ng-model="access.viewer.login">
-          </md-input-container>
-          <md-input-container flex="50">
-            <label>Password</label>
-            <input ng-model="access.viewer.password">
-          </md-input-container>
-        </div>
-      </md-card-content>
-      <md-card-actions layout="row" layout-align="end center">
-        <md-button>Save</md-button>
-      </md-card-actions>
-    </md-card>
-  </div>
-</md-content>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">WiFi client</span>
+      <span class="md-subhead">Connect to your home WiFi</span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <md-icon md-svg-icon="wifi_lock" class="md-media-sm card-media"></md-icon>
+    </md-card-title-media>
+  </md-card-title>
+  <md-card-content>
+    <p>Enter the credentials for your home WiFi to use this web interface and connect your home automation</p>
+    <div layout="row" layout-xs="column">
+      <md-input-container flex="50">
+        <label>SSID</label>
+        <input ng-model="wifi.ssid">
+      </md-input-container>
+      <md-input-container flex="50">
+        <label>Password</label>
+        <input ng-model="wifi.password">
+      </md-input-container>
+    </div>
+  </md-card-content>
+  <md-card-actions layout="row" layout-align="end center">
+    <md-button>Connect</md-button>
+  </md-card-actions>
+</md-card>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">WiFi hotspot</span>
+      <span class="md-subhead">Flampe creates this network if none are found</span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <md-icon md-svg-icon="wifi_tethering" class="md-media-sm card-media"></md-icon>
+    </md-card-title-media>
+  </md-card-title>
+  <md-card-content>
+    <p>This will help you set up your Flampe in another environment or when you change your home WiFi.</p>
+    <div layout="row" layout-xs="column">
+      <md-input-container flex="50">
+        <label>SSID</label>
+        <input ng-model="wifi.ssid">
+      </md-input-container>
+      <md-input-container flex="50">
+        <label>Password</label>
+        <input ng-model="wifi.password">
+      </md-input-container>
+    </div>
+  </md-card-content>
+  <md-card-actions layout="row" layout-align="end center">
+    <md-button>Save</md-button>
+  </md-card-actions>
+</md-card>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Passwords</span>
+      <span class="md-subhead">Protect this webinterface</span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <md-icon md-svg-icon="security" class="md-media-sm card-media"></md-icon>
+    </md-card-title-media>
+  </md-card-title>
+  <md-card-content>
+    <p>The master login grants access to all controls and settings.</p>
+    <div layout="row">
+      <md-input-container flex="50">
+        <label>Master login</label>
+        <input ng-model="access.master.login">
+      </md-input-container>
+      <md-input-container flex="50">
+        <label>Password</label>
+        <input ng-model="access.master.password">
+      </md-input-container>
+    </div>
+    <p>The viewer password grants access to brightness, color, and animation control.</p>
+    <div layout="row">
+      <md-input-container flex="50">
+        <label>Viewer login</label>
+        <input ng-model="access.viewer.login">
+      </md-input-container>
+      <md-input-container flex="50">
+        <label>Password</label>
+        <input ng-model="access.viewer.password">
+      </md-input-container>
+    </div>
+  </md-card-content>
+  <md-card-actions layout="row" layout-align="end center">
+    <md-button>Save</md-button>
+  </md-card-actions>
+</md-card>
