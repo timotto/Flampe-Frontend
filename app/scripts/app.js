@@ -85,7 +85,9 @@ angular
     $translateProvider
       .uniformLanguageTag('bcp47')
       .determinePreferredLanguage()
-      .fallbackLanguage('en-GB');
+      .fallbackLanguage('en-GB')
+      .useSanitizeValueStrategy('escape');
+
 
     // $mdThemingProvider.theme('default')
     //   .primaryPalette('green')
