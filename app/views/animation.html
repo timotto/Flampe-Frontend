@@ -9,14 +9,14 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <md-select ng-model="animation.animationCurrent" aria-label="animation-current">
-      <md-option>Solid color / no animation</md-option>
-      <md-option>Fire</md-option>
-      <md-option>Pulse</md-option>
-      <md-option>Juggle</md-option>
-      <md-option>Rainbow</md-option>
+    <p>{{'ANIMATION'|translate}}</p>
+    <md-select ng-model="animation.current" aria-label="animation-current">
+      <md-option ng-repeat="anim in animations" ng-value="anim.textkey">{{anim.textkey|translate}}</md-option>
     </md-select>
-
+    <p>{{'PALETTE'|translate}}</p>
+    <md-select ng-model="animation.paletteCurrent" aria-label="palette-current">
+      <md-option ng-repeat="palette in palettes" ng-value="palette.textkey">{{palette.textkey|translate}}</md-option>
+    </md-select>
   </md-card-content>
 </md-card>
 <md-card>
@@ -30,27 +30,30 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <md-select ng-model="animation.animationIdle" aria-label="animation-idle">
-      <md-option>Solid color / no animation</md-option>
-      <md-option>Fire</md-option>
-      <md-option>Pulse</md-option>
-      <md-option>Juggle</md-option>
-      <md-option>Rainbow</md-option>
+    <p>{{'ANIMATION'|translate}}</p>
+    <md-select ng-model="animation.idle" aria-label="animation-idle">
+      <md-option ng-repeat="anim in animations" ng-value="anim.textkey">{{anim.textkey|translate}}</md-option>
     </md-select>
+    <p>{{'PALETTE'|translate}}</p>
+    <md-select ng-model="animation.paletteIdle" aria-label="palette-idle">
+      <md-option ng-repeat="palette in palettes" ng-value="palette.textkey">{{palette.textkey|translate}}</md-option>
+    </md-select>
+    <p>{{'BRIGHTNESS'|translate}}</p>
     <md-slider-container>
-      <span>{{'BRIGHTNESS'|translate}}</span>
-      <md-slider flex min="0" max="255" ng-model="color.red" aria-label="red" id="red-slider">
+      <span></span>
+      <md-slider flex min="0" max="100" ng-model="animation.idleBrightness" aria-label="brightness" id="brightness-slider">
       </md-slider>
       <md-input-container>
-        <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="red-slider">
+        <input flex type="number" ng-model="animation.idleBrightness" aria-label="brightness" aria-controls="brightness-slider">
       </md-input-container>
     </md-slider-container>
+    <p>{{'TIMEOUT'|translate}}</p>
     <md-slider-container>
-      <span>{{'TIMEOUT'|translate}}</span>
-      <md-slider flex min="0" max="255" ng-model="color.red" aria-label="red" id="red-slider">
+      <span></span>
+      <md-slider flex min="0" max="100" ng-model="animation.idleTime" aria-label="timeout" id="timeout-slider">
       </md-slider>
       <md-input-container>
-        <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="red-slider">
+        <input flex type="number" ng-model="animation.idleTime" aria-label="timeout" aria-controls="timeout-slider">
       </md-input-container>
     </md-slider-container>
   </md-card-content>
