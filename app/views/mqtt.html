@@ -9,23 +9,30 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <md-input-container>
-      <label>Hostname</label>
-      <input ng-model="mqtt.host">
-    </md-input-container>
-    <md-input-container>
-      <label>Port</label>
-      <input ng-model="mqtt.port">
-    </md-input-container>
-    <md-input-container>
-      <label>Login</label>
-      <input ng-model="mqtt.login">
-    </md-input-container>
-    <md-input-container>
-      <label>Password</label>
-      <input ng-model="mqtt.password">
-    </md-input-container>
+    <div layout="row" layout-xs="column">
+      <md-input-container flex="50">
+        <label>Hostname</label>
+        <input ng-model="mqtt.host">
+      </md-input-container>
+      <md-input-container flex="50">
+        <label>Port</label>
+        <input ng-model="mqtt.port">
+      </md-input-container>
+    </div>
+    <div layout="row" layout-xs="column">
+      <md-input-container flex="50">
+        <label>Login</label>
+        <input ng-model="mqtt.login">
+      </md-input-container>
+      <md-input-container flex="50">
+        <label>Password</label>
+        <input ng-model="mqtt.password">
+      </md-input-container>
+    </div>
   </md-card-content>
+  <md-card-actions layout="row" layout-align="end center">
+    <md-button>Save</md-button>
+  </md-card-actions>
 </md-card>
 <md-card>
   <md-card-title>
@@ -37,18 +44,17 @@
       <md-icon md-svg-icon="linear_scale" class="md-media-sm card-media"></md-icon>
     </md-card-title-media>
   </md-card-title>
-  <md-card-content>
+  <md-card-content layout="column">
     <md-input-container>
       <label>Device name</label>
       <input ng-model="mqtt.name">
     </md-input-container>
+    <md-checkbox name="listenCommands" ng-model="mqtt.listen.commands">
+      Listen for commands
+    </md-checkbox>
     <md-input-container>
       <label>in topic</label>
       <input ng-model="mqtt.intopic">
-    </md-input-container>
-    <md-input-container>
-      <label>out topic</label>
-      <input ng-model="mqtt.outtopic">
     </md-input-container>
 
     <md-checkbox name="publishState" ng-model="mqtt.publish.state">
@@ -57,5 +63,13 @@
     <md-checkbox name="publishGesture" ng-model="mqtt.publish.gesture">
       Publish gestures
     </md-checkbox>
+
+    <md-input-container>
+      <label>out topic</label>
+      <input ng-model="mqtt.outtopic">
+    </md-input-container>
   </md-card-content>
+  <md-card-actions layout="row" layout-align="end center">
+    <md-button>Save</md-button>
+  </md-card-actions>
 </md-card>
