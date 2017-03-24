@@ -22,7 +22,7 @@
     </div>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button>{{'CONNECT'|translate}}</md-button>
+    <md-button ng-click="connectWifi($event)">{{'CONNECT'|translate}}</md-button>
   </md-card-actions>
 </md-card>
 <md-card>
@@ -40,16 +40,16 @@
     <div layout="row" layout-xs="column">
       <md-input-container flex="50">
         <label>{{'SSID'|translate}}</label>
-        <input ng-model="wifi.ssid">
+        <input ng-model="hotspot.ssid">
       </md-input-container>
       <md-input-container flex="50">
         <label>{{'PASSWORD'|translate}}</label>
-        <input ng-model="wifi.password">
+        <input ng-model="hotspot.password">
       </md-input-container>
     </div>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button>{{'SAVE'|translate}}</md-button>
+    <md-button ng-click="saveHotspot($event)">{{'SAVE'|translate}}</md-button>
   </md-card-actions>
 </md-card>
 <md-card>
@@ -87,6 +87,6 @@
     </div>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button>{{'SAVE'|translate}}</md-button>
+    <md-button ng-click="savePasswords($event)">{{'SAVE'|translate}}</md-button>
   </md-card-actions>
 </md-card>

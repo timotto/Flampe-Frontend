@@ -40,12 +40,12 @@ angular
       .when('/wifi', {
         templateUrl: 'views/wifi.html',
         controller: 'WifiCtrl',
-        controllerAs: 'wifi'
+        controllerAs: 'wifictrl'
       })
       .when('/mqtt', {
         templateUrl: 'views/mqtt.html',
         controller: 'MqttCtrl',
-        controllerAs: 'mqtt'
+        controllerAs: 'mqttctrl'
       })
       .when('/update', {
         templateUrl: 'views/update.html',
