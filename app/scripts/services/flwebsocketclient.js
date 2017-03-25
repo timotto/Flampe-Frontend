@@ -14,7 +14,15 @@ angular.module('flampeFrontendAngularApp')
      * prefix with http, https, ws, wss
      * @type {string}
      */
-    var apiPathComponent = '://'+$location.host()+':3000/';
+    var wsApiUri,httpApiUri;
+    if ($location.port() === 80) {
+      wsApiUri = 'ws' + $location.host() + ':81/';
+      httpApiUri = 'http' + $location.host() + ':80/api';
+    } else {
+      var part = '://' + $location.host() + ':3000/';
+      wsApiUri = 'ws' + part;
+      httpApiUri = 'http' + part;
+    }
 
     /**
      * assumes dst is not undefined and of same type as src (object or Array)
@@ -198,7 +206,7 @@ angular.module('flampeFrontendAngularApp')
     function getState() {
       return $http({
         method: 'GET',
-        url: 'http' + apiPathComponent
+        url: httpApiUri
       }).then(function successCallback(response) {
         upstreamState = response.data.data;
         softCopy(upstreamState, $rootScope.state);
@@ -207,7 +215,7 @@ angular.module('flampeFrontendAngularApp')
       });
     }
 
-    var dataStream = $websocket('ws' + apiPathComponent);
+    var dataStream = $websocket(wsApiUri);
 
     dataStream.onMessage(function(message) {
       var msg = JSON.parse(message.data);
