@@ -8,40 +8,30 @@
  * Controller of the flampeFrontendAngularApp
  */
 angular.module('flampeFrontendAngularApp')
-  .controller('WifiCtrl', ['$scope','$mdDialog','$translate',function ($scope,$mdDialog,$translate) {
-    $scope.wifi = {
-      ssid: 'Some ssid',
-      password: 'Some password'
-    };
-    $scope.hotspot = {
-      ssid: 'Some ssid',
-      password: 'Some password'
-    };
-    $scope.access = {
-      master: {
-        login: 'Some login',
-        password: 'Some password'
-      },
-      viewer: {
-        login: 'Some login',
-        password: 'Some password'
-      }
-    };
-    $scope.connectWifi = function(ev) {
-      youAreConnectedWarning(ev, function(){
+  .controller('WifiCtrl', ['$rootScope','$scope','$mdDialog','$translate',function ($rootScope,$scope,$mdDialog,$translate) {
 
-      });
+    // working on a copy here, changes are sent via button
+    $scope.state = angular.copy($rootScope.state);
+
+    // watch those in rootScope, will be updated there if upstream changes
+    ['wifi','hotspot','access'].forEach(function(key){
+      $rootScope.$watch(['state',key].join('.'), function(newValue,oldValue){
+        angular.copy($rootScope.state[key], $scope.state[key]);
+      }, true);
+    });
+
+    $scope.connectWifi = function(ev) {
+      youAreConnectedWarning(ev, 'wifi');
     };
     $scope.saveHotspot = function(ev) {
-      youAreConnectedWarning(ev, function(){
-
-      });
+      youAreConnectedWarning(ev, 'hotspot');
     };
     $scope.savePasswords = function() {
-
+      var stateName = 'access';
+      angular.copy($scope.state[stateName], $rootScope.state[stateName]);
     };
 
-    function youAreConnectedWarning(ev,goOnCb) {
+    function youAreConnectedWarning(ev,stateName) {
       // Appending dialog to document.body to cover sidenav in docs app
       $translate(['CONNECTED_TITLE','CONNECTED_TEXT','OK','CANCEL']).then(function(translations){
         var confirm = $mdDialog.confirm()
@@ -53,8 +43,9 @@ angular.module('flampeFrontendAngularApp')
           .cancel(translations.CANCEL);
 
         $mdDialog.show(confirm).then(function() {
-          goOnCb();
+          angular.copy($scope.state[stateName], $rootScope.state[stateName]);
         }, function() {
+          angular.copy($rootScope.state[stateName], $scope.state[stateName]);
         });
       });
     }

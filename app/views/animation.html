@@ -10,12 +10,12 @@
   </md-card-title>
   <md-card-content>
     <p>{{'ANIMATION'|translate}}</p>
-    <md-select ng-model="settings.current" aria-label="animation-current">
-      <md-option ng-repeat="anim in animations" ng-value="anim.textkey">{{anim.textkey|translate}}</md-option>
+    <md-select ng-model="settings.currentAnimation" aria-label="animation-current">
+      <md-option ng-repeat="(textkey,o) in settings.animations" ng-value="textkey">{{textkey|translate}}</md-option>
     </md-select>
     <p>{{'PALETTE'|translate}}</p>
-    <md-select ng-model="settings.paletteCurrent" aria-label="palette-current">
-      <md-option ng-repeat="palette in palettes" ng-value="palette.textkey">{{palette.textkey|translate}}</md-option>
+    <md-select ng-model="settings.currentPalette" aria-label="palette-current">
+      <md-option ng-repeat="(textkey,o) in settings.palettes" ng-value="textkey">{{textkey|translate}}</md-option>
     </md-select>
   </md-card-content>
 </md-card>
@@ -31,12 +31,13 @@
   </md-card-title>
   <md-card-content>
     <p>{{'ANIMATION'|translate}}</p>
-    <md-select ng-model="settings.idle" aria-label="animation-idle">
-      <md-option ng-repeat="anim in animations" ng-value="anim.textkey">{{anim.textkey|translate}}</md-option>
+    <md-select ng-model="settings.idleAnimation" aria-label="animation-idle">
+      <!--<md-option ng-repeat="(key,anim) in settings.animations" ng-value="anim.textkey">{{anim.textkey|translate}}</md-option>-->
+      <md-option ng-repeat="(textkey,o) in settings.animations" ng-value="textkey">{{textkey|translate}}</md-option>
     </md-select>
     <p>{{'PALETTE'|translate}}</p>
-    <md-select ng-model="settings.paletteIdle" aria-label="palette-idle">
-      <md-option ng-repeat="palette in palettes" ng-value="palette.textkey">{{palette.textkey|translate}}</md-option>
+    <md-select ng-model="settings.idlePalette" aria-label="palette-idle">
+      <md-option ng-repeat="(textkey,o) in settings.palettes" ng-value="textkey">{{textkey|translate}}</md-option>
     </md-select>
     <p>{{'BRIGHTNESS'|translate}}</p>
     <md-slider-container>

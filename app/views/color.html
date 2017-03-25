@@ -11,16 +11,16 @@
   <md-card-content>
     <md-slider-container>
       <span></span>
-      <md-slider flex ng-model="brightness" min="0" max="100" aria-label="brightness" id="brightness-slider">
+      <md-slider flex ng-model="state.brightness" min="0" max="100" aria-label="brightness" id="brightness-slider">
       </md-slider>
       <md-input-container>
-        <input ng-model="brightness" flex type="number" aria-label="brightness" aria-controls="brightness-slider">
+        <input ng-model="state.brightness" flex type="number" aria-label="brightness" aria-controls="brightness-slider">
       </md-input-container>
     </md-slider-container>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
-    <md-button ng-click="brightness = 0">{{'BRIGHTNESS_OFF' | translate}}</md-button>
-    <md-button ng-click="brightness = 100">{{'BRIGHTNESS_FULL' | translate}}</md-button>
+    <md-button ng-click="state.brightness = 0">{{'BRIGHTNESS_OFF' | translate}}</md-button>
+    <md-button ng-click="state.brightness = 100">{{'BRIGHTNESS_FULL' | translate}}</md-button>
   </md-card-actions>
 </md-card>
 <md-card>
@@ -34,7 +34,7 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <fl-color-selector color="primary"></fl-color-selector>
+    <fl-color-selector color="state.primary" setter="primary"></fl-color-selector>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
     <md-button ng-click="randomizeColor('primary')">{{'RANDOMIZE' | translate}}</md-button>
@@ -51,7 +51,7 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content>
-    <fl-color-selector color="accent"></fl-color-selector>
+    <fl-color-selector color="state.accent" setter="accent"></fl-color-selector>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
     <md-button ng-click="randomizeColor('accent')">{{'RANDOMIZE' | translate}}</md-button>

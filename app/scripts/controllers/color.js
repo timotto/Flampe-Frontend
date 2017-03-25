@@ -8,7 +8,7 @@
  * Controller of the flampeFrontendAngularApp
  */
 angular.module('flampeFrontendAngularApp')
-  .controller('ColorCtrl', ['$scope',function ($scope) {
+  .controller('ColorCtrl', ['$scope','$rootScope',function ($scope,$rootScope) {
     function randomColor() {
       var color = {
         red: Math.floor(Math.random() * 255),
@@ -18,11 +18,9 @@ angular.module('flampeFrontendAngularApp')
       return color;
     }
 
-    $scope.brightness = Math.floor(Math.random() * 100);
-    $scope.primary=randomColor();
-    $scope.accent=randomColor();
+    $scope.state = $rootScope.state;
 
     $scope.randomizeColor = function(name) {
-      $scope[name] = randomColor();
+      $scope.state[name] = randomColor();
     };
   }]);

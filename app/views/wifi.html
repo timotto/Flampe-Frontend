@@ -13,11 +13,11 @@
     <div layout="row" layout-xs="column">
       <md-input-container flex="50">
         <label>{{'SSID'|translate}}</label>
-        <input ng-model="wifi.ssid">
+        <input ng-model="state.wifi.ssid">
       </md-input-container>
       <md-input-container flex="50">
         <label>{{'PASSWORD'|translate}}</label>
-        <input ng-model="wifi.password">
+        <input ng-model="state.wifi.password">
       </md-input-container>
     </div>
   </md-card-content>
@@ -40,11 +40,11 @@
     <div layout="row" layout-xs="column">
       <md-input-container flex="50">
         <label>{{'SSID'|translate}}</label>
-        <input ng-model="hotspot.ssid">
+        <input ng-model="state.hotspot.ssid">
       </md-input-container>
       <md-input-container flex="50">
         <label>{{'PASSWORD'|translate}}</label>
-        <input ng-model="hotspot.password">
+        <input ng-model="state.hotspot.password">
       </md-input-container>
     </div>
   </md-card-content>
@@ -67,22 +67,22 @@
     <div layout="row" layout-xs="column">
       <md-input-container flex="50">
         <label>{{'MASTER_LOGIN'|translate}}</label>
-        <input ng-model="access.master.login">
+        <input ng-model="state.access.master.login">
       </md-input-container>
       <md-input-container flex="50">
         <label>{{'PASSWORD'|translate}}</label>
-        <input ng-model="access.master.password">
+        <input ng-model="state.access.master.password">
       </md-input-container>
     </div>
     <p>{{'PASSWORDS_VIEWER_CONTENT'|translate}}</p>
     <div layout="row" layout-xs="column">
       <md-input-container flex="50">
         <label>{{'VIEWER_LOGIN'|translate}}</label>
-        <input ng-model="access.viewer.login">
+        <input ng-model="state.access.viewer.login">
       </md-input-container>
       <md-input-container flex="50">
         <label>{{'PASSWORD'|translate}}</label>
-        <input ng-model="access.viewer.password">
+        <input ng-model="state.access.viewer.password">
       </md-input-container>
     </div>
   </md-card-content>

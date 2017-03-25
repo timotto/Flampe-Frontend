@@ -18,7 +18,8 @@ angular
     'ngMessages',
     'ngResource',
     'ngRoute',
-    'ngSanitize'
+    'ngSanitize',
+    'ngWebSocket'
   ])
   .config(['$routeProvider','$mdIconProvider','$translateProvider',function ($routeProvider,$mdIconProvider,$translateProvider) { // $mdThemingProvider
     $routeProvider
@@ -94,7 +95,8 @@ angular
     //   .accentPalette('yellow');
 
   }])
-  .controller('NavigationController',['$scope','$mdSidenav','$location',function($scope,$mdSidenav,$location){
+  // must use flWebsocket once, so it loads data and establishes web socket. Afterwards just $rootScope is used
+  .controller('NavigationController',['$scope','$mdSidenav','$location','flWebsocket',function($scope,$mdSidenav,$location,flWebsocket){
     $scope.toggleMenu = function() {
       $mdSidenav('left').toggle();
     };
