@@ -8,7 +8,7 @@
  * Service in the flampeFrontendAngularApp.
  */
 angular.module('flampeFrontendAngularApp')
-  .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$location',function ($websocket,$http,$rootScope,$interval,$location) {
+  .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$location','$mdToast',function ($websocket,$http,$rootScope,$interval,$location,$mdToast) {
 
     /**
      * prefix with http, https, ws, wss
@@ -16,10 +16,10 @@ angular.module('flampeFrontendAngularApp')
      */
     var wsApiUri,httpApiUri;
     if ($location.port() === 80) {
-      wsApiUri = 'ws' + $location.host() + ':81/';
-      httpApiUri = 'http' + $location.host() + ':80/api';
+      wsApiUri = 'ws://' + $location.host() + ':81/api';
+      httpApiUri = 'http://' + $location.host() + ':80/api';
     } else {
-      var part = '://' + $location.host() + ':3000/';
+      var part = '://' + $location.host() + ':3000/api';
       wsApiUri = 'ws' + part;
       httpApiUri = 'http' + part;
     }
@@ -179,6 +179,10 @@ angular.module('flampeFrontendAngularApp')
       }
     };
     softCopy(upstreamState, $rootScope.state);
+
+    // register individual watchers for each and every property
+    // changes are noted with timestamps of first&last, then collected for up to 200ms
+    // and sent after at most 1000ms
     objectPaths(upstreamState).forEach(function(path){
       $rootScope.$watch(['state',path].join('.'), function(newState,oldState){
         if (subState(upstreamState, path) !== newState) {
@@ -203,6 +207,10 @@ angular.module('flampeFrontendAngularApp')
       });
     });
 
+    /**
+     * Load the current state via HTTP GET request
+     * @returns {*} promise
+     */
     function getState() {
       return $http({
         method: 'GET',
@@ -211,24 +219,80 @@ angular.module('flampeFrontendAngularApp')
         upstreamState = response.data.data;
         softCopy(upstreamState, $rootScope.state);
       }, function errorCallback(response) {
-        console.log('backend get request failed',response)
+        console.log('backend get request failed',response);
+        showActionToast('Connection damaged');
       });
     }
 
-    var dataStream = $websocket(wsApiUri);
+    var websocketConnectionCount = 0;
 
-    dataStream.onMessage(function(message) {
-      var msg = JSON.parse(message.data);
-      if (msg.action === 'push') {
-        softCopy(msg.data, upstreamState);
-        softCopy(upstreamState, $rootScope.state);
-      }
-    });
+    function setupWebsocket() {
+      dataStream = $websocket(wsApiUri);
+
+      dataStream.onMessage(function(message) {
+        var msg = JSON.parse(message.data);
+        if (msg.action === 'push') {
+          softCopy(msg.data, upstreamState);
+          softCopy(upstreamState, $rootScope.state);
+        }
+      });
+      dataStream.onOpen(function(){
+        // don't show 'connected' toast on first connection, only after re-connects from errors
+        if (websocketConnectionCount++ > 0) {
+          var pinTo = getToastPosition();
+
+          $mdToast.show(
+            $mdToast.simple()
+              .textContent('Socket connected!')
+              .position(pinTo )
+              .hideDelay(3000)
+          );
+        }
+      });
+      dataStream.onError(function(){
+        showActionToast('Socket connection damaged')
+      });
+    }
+
+    function getToastPosition() {
+      var position = {
+        bottom: true,
+        top: false,
+        left: false,
+        right: false
+      };
+      return Object.keys(position)
+        .filter(function(pos) { return position[pos]; })
+        .join(' ');
+    }
+
+    function showActionToast(text) {
+      var pinTo = getToastPosition();
+      var toast = $mdToast.simple()
+        .textContent(text)
+        .action('Reconnect')
+        .hideDelay(5000)
+        .highlightAction(true)
+        .highlightClass('md-warn')// Accent is used by default, this just demonstrates the usage.
+        .position(pinTo);
+
+      $mdToast.show(toast).then(function(response) {
+        if ( response == 'ok' ) {
+          methods.get().then(function(){},function(){});
+          dataStream.close(true);
+          setupWebsocket();
+        }
+      });
+    }
+
+    var dataStream;
+
+    setupWebsocket();
 
     var methods = {
       state: $rootScope.state,
       get: function() {
-        getState();
+        return getState();
       },
       push: function(data) {
         dataStream.send(JSON.stringify({action:'push', data: data}));

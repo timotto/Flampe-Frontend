@@ -19,7 +19,8 @@ Running `grunt test` will run the unit tests with karma.
 ## Arduino
 
 The content of the compressed/ directory resulting from a grunt build should become the content of the 
-arduino/FlampeESP8266/data/w/ folder. All the files are compressed using gzip.
+arduino/FlampeESP8266/data/w/ folder. All the files are compressed using gzip. The index file should be renamed from
+index.html.gz to index.htm.gz.
 
 The Sketch relies on FastLED to draw patterns. An optional APDS-9960 sensor connected via I2C allows hand gesture, and 
 light intensity and color detection.
