@@ -17,8 +17,6 @@ var state = {
   animation:{
     animations: {'ANIM_SOLID':{},'ANIM_GRADIENT':{},'ANIM_FIRE':{},'ANIM_PULSE':{},'ANIM_JUGGLE':{},'ANIM_RAINBOW':{}},
     palettes: {'PALETTE_BASE':{},'PALETTE_HEAT':{},'PALETTE_OCEAN':{},'PALETTE_CLOUD':{},'PALETTE_FOREST':{},'PALETTE_LAVA':{},'PALETTE_RAINBOW':{},'PALETTE_PARTY':{}},
-    animationsX: ['ANIM_SOLID','ANIM_GRADIENT','ANIM_FIRE','ANIM_PULSE','ANIM_JUGGLE','ANIM_RAINBOW'],
-    palettesX: ['PALETTE_BASE','PALETTE_HEAT','PALETTE_OCEAN','PALETTE_CLOUD','PALETTE_FOREST','PALETTE_LAVA','PALETTE_RAINBOW','PALETTE_PARTY'],
     currentAnimation: 'ANIM_FIRE',
     idleAnimation: 'ANIM_PULSE',
     currentPalette: 'PALETTE_OCEAN',
@@ -81,11 +79,11 @@ app.use(function(req,res,next){
   return next();
 });
 
-app.get('/', function(req, res, next){
+app.get('/api', function(req, res, next){
   res.json({status:'OK',data: state});
 });
 
-app.ws('/', function(ws, req) {
+app.ws('/api', function(ws, req) {
   ws.on('message', function(msgText) {
     var msg = JSON.parse(msgText);
     if (msg.action === 'push') {
