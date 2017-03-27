@@ -10,10 +10,6 @@
 angular.module('flampeFrontendAngularApp')
   .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$location','$mdToast',function ($websocket,$http,$rootScope,$interval,$location,$mdToast) {
 
-    /**
-     * prefix with http, https, ws, wss
-     * @type {string}
-     */
     var wsApiUri,httpApiUri;
     if ($location.port() === 80) {
       wsApiUri = 'ws://' + $location.host() + ':81/api';
