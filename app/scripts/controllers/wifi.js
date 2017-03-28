@@ -15,7 +15,7 @@ angular.module('flampeFrontendAngularApp')
 
     // watch those in rootScope, will be updated there if upstream changes
     ['wifi','hotspot','access'].forEach(function(key){
-      $rootScope.$watch(['state',key].join('.'), function(newValue,oldValue){
+      $rootScope.$watch(['state',key].join('.'), function(){
         angular.copy($rootScope.state[key], $scope.state[key]);
       }, true);
     });

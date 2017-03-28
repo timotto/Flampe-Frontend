@@ -78,27 +78,65 @@ angular.module('flampeFrontendAngularApp')
     }
 
     /**
-     * ID of pushChanges() $interval
-     * @type {undefined}
+     * Utility class to send changes to the backend after some grace time to prevent
+     * sliders in the UI used on mobile devices from flooding the backend with updates.
+     * The first change is sent instantaneously, consecutive changes are collected for
+     * at least unchangedMs ms and up to ageMs ms before they are send as collection with
+     * other also expired changes.
+     * @param unchangedMs ms that must have passed since the last update to this value
+     * @param ageMs ms that must have passed since the first update to this value
+     * @param longTimeMs ms that must have passed since that last change to consider this value for instant send
+     * @constructor
      */
-    var uiPusherId = undefined;
+    function ChangePusher(unchangedMs, ageMs, longTimeMs) {
+      this.unchangedMs = unchangedMs;
+      this.ageMs = ageMs;
+      this.longTimeMs = longTimeMs;
+      this.tickMs = unchangedMs / 2;
+
+      this.timerId = undefined;
+      this.lastChangeTime = undefined;
+
+      this.uiChanges = {};
+    }
 
     /**
-     * contains changes done in the UI waiting to be sent to the backend
-     *
-     * @type {{}}
+     * Private function called by change() method. Starts the $interval function.
      */
-    var uiChanges = {};
+    ChangePusher.prototype.startTimer = function(){
+      if (this.timerId !== undefined) {
+        // already started
+        return;
+      }
+      var that = this;
+      this.timerId = $interval(function(){
+        that.push(that.unchangedMs, that.ageMs);
+      }, that.tickMs);
+    };
 
     /**
-     * Sends content of uiChanges that has changed for some time or that
-     * has been changing for some time constantly
+     * Private function called by push() method. Stops the $interval function.
      */
-    function pushChanges(unchangedMs, ageMs) {
+    ChangePusher.prototype.stopTimer = function(){
+      // check if running
+      if (this.timerId !== undefined) {
+        $interval.cancel(this.timerId);
+        this.timerId = undefined;
+      }
+    };
+
+    /**
+     * Private function called by the $interval. Checks the age of pending changes, collects the
+     * expired ones, builds an Object from their values and sends it to the backend.
+     * @param unchangedMs ms that must have passed since the last modification of a value
+     * @param ageMs ms that must have passed since the first modification of a value
+     */
+    ChangePusher.prototype.push = function(unchangedMs, ageMs){
       var acceptedChanges = {};
       var now = new Date().getTime();
       var unchangedLimit = now - unchangedMs;
       var ageLimit = now - ageMs;
+      var uiChanges = this.uiChanges;
       Object.keys(uiChanges).forEach(function(path){
         if (uiChanges[path].time > unchangedLimit && uiChanges[path].first < ageLimit) {
           return;
@@ -117,18 +155,49 @@ angular.module('flampeFrontendAngularApp')
           x = x[p];
         });
         x[lastStep] = acceptedChanges[path];
-        // console.log('change',change);
         softCopy(change, changes);
         delete uiChanges[path];
       });
       console.log('changes',changes);
       methods.push(changes);
       if (Object.keys(uiChanges).length === 0) {
-        $interval.cancel(uiPusherId);
-        uiPusherId = undefined;
-        // console.log('pusher canceled')
+        // stop ticker if there are no more changes left
+        this.stopTimer();
       }
-    }
+    };
+
+    /**
+     * Private function called by change(). Push the stored changes
+     * now, regardless of their age or more recently added changes.
+     */
+    ChangePusher.prototype.pushNow = function(){this.push(0, 0);};
+
+    /**
+     * Notify the ChangePusher of a new change to push to the backend.
+     * @param path object path in . notation (eg data.some.value)
+     * @param value new value
+     */
+    ChangePusher.prototype.change = function(path, value) {
+      var now = new Date().getTime();
+
+      var first = this.uiChanges[path] !== undefined?this.uiChanges[path].first:now;
+
+      this.uiChanges[path] = {
+        value: value,
+        time: now,
+        first: first
+      };
+
+      if (this.lastChangeTime === undefined || (this.lastChangeTime + this.longTimeMs < now)) {
+        this.pushNow();
+      } else {
+        this.startTimer();
+      }
+
+      this.lastChangeTime = now;
+    };
+
+    var changePusher = new ChangePusher(300, 1000, 3000);
 
     $rootScope.state = {};
     var upstreamState = {
@@ -177,28 +246,11 @@ angular.module('flampeFrontendAngularApp')
     softCopy(upstreamState, $rootScope.state);
 
     // register individual watchers for each and every property
-    // changes are noted with timestamps of first&last, then collected for up to 200ms
-    // and sent after at most 1000ms
     objectPaths(upstreamState).forEach(function(path){
-      $rootScope.$watch(['state',path].join('.'), function(newState,oldState){
+      // TODO might the third boolean in $watch do some good here? To allow a single watcher.
+      $rootScope.$watch(['state',path].join('.'), function(newState){
         if (subState(upstreamState, path) !== newState) {
-          // console.log('UI change @ [%s] from [%s] to [%s]', path, oldState, newState);
-          var now = new Date().getTime();
-          var first = now;
-          if (uiChanges[path] !== undefined) {
-            first = uiChanges[path].first;
-          }
-          uiChanges[path] = {
-            value: newState,
-            time: now,
-            first: first
-          };
-          if (uiPusherId === undefined) {
-            uiPusherId = $interval(function(){
-              pushChanges(200, 1000);
-            }, 100);
-            // console.log('pusher started')
-          }
+          changePusher.change(path, newState);
         }
       });
     });
@@ -246,7 +298,7 @@ angular.module('flampeFrontendAngularApp')
         }
       });
       dataStream.onError(function(){
-        showActionToast('Socket connection damaged')
+        showActionToast('Socket connection damaged');
       });
     }
 
@@ -273,7 +325,7 @@ angular.module('flampeFrontendAngularApp')
         .position(pinTo);
 
       $mdToast.show(toast).then(function(response) {
-        if ( response == 'ok' ) {
+        if ( response === 'ok' ) {
           methods.get().then(function(){},function(){});
           dataStream.close(true);
           setupWebsocket();
@@ -294,8 +346,6 @@ angular.module('flampeFrontendAngularApp')
         dataStream.send(JSON.stringify({action:'push', data: data}));
       }
     };
-
-    getState().then(function(){console.log('getState ok');},function(){console.log('getState failed');});
 
     return methods;
   }]);
