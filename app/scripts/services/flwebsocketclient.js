@@ -10,10 +10,19 @@
 angular.module('flampeFrontendAngularApp')
   .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$timeout','$location','$mdToast','$translate', function ($websocket,$http,$rootScope,$interval,$timeout,$location,$mdToast,$translate) {
 
-    // different WebSocket port when served from port 80
-    var wsPort = $location.port() === 80?81:3081;
+    // match protocol security
     var wsProto = $location.protocol() === 'https'?'wss':'ws';
-    var wsApiUri = wsProto + '://' + $location.host() + ':' + wsPort + '/api';
+
+    // different WebSocket port:
+    // -when served from https then same port (demo)
+    var wsPort = wsProto === 'wss'?$location.port()
+      // -when served from http & from port 80 then 81 (esp8266)
+      :$location.port() === 80?81
+        // -else 3081 (dev)
+        :9001;
+
+    // assemble websocket url
+    var wsApiUri = [wsProto, '://', $location.host(), ':' + wsPort, '/api'].join('');
 
     var texts = {};
     $translate(['CONNECTED','CONNECTING','DISCONNECTED','RECONNECT']).then(function(translations){texts = translations;});
