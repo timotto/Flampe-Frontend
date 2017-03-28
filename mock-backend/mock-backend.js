@@ -78,11 +78,6 @@ function softCopy(src,dst) {
   });
 }
 
-app.use(function(req,res,next){
-  res.header('Access-Control-Allow-Origin','*');
-  return next();
-});
-
 app.ws('/api', function(ws, req) {
   ws.send(JSON.stringify({action:'push',data: {status: 'connected'}}));
   ws.on('message', function(msgText) {
