@@ -58,6 +58,11 @@ angular
         controller: 'HelpCtrl',
         controllerAs: 'help'
       })
+      .when('/setup', {
+        templateUrl: 'views/setup.html',
+        controller: 'SetupCtrl',
+        controllerAs: 'setup'
+      })
       .otherwise({
         redirectTo: '/control'
       });
@@ -81,7 +86,8 @@ angular
       .icon('security', 'images/ic_security_black_24px.svg', 24)
       .icon('blur_on', 'images/ic_blur_on_black_24px.svg', 24)
       .icon('timer', 'images/ic_timer_black_24px.svg', 24)
-      .icon('timelapse', 'images/ic_timelapse_black_24px.svg', 24);
+      .icon('timelapse', 'images/ic_timelapse_black_24px.svg', 24)
+      .icon('settings_black', 'images/ic_settings_black_24px.svg', 24);
     // $translateProvider.preferredLanguage('en');
     $translateProvider
       .uniformLanguageTag('bcp47')

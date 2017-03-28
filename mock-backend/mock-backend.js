@@ -57,6 +57,10 @@ var state = {
       login: '',
       password: ''
     }
+  },
+  setup: {
+    ledcount: 144,
+    reverse: false
   }
 };
 

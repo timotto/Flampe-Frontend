@@ -1,0 +1,26 @@
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Setup</span>
+      <span class="md-subhead">Don't mess with this</span>
+    </md-card-title-text>
+    <md-card-title-media>
+      <md-icon md-svg-icon="settings_black" class="md-media-sm card-media"></md-icon>
+    </md-card-title-media>
+  </md-card-title>
+  <md-card-content layout-gt-sm="row">
+    <div>
+      <md-input-container>
+        <label>LED count</label>
+        <input ng-model="state.setup.ledcount" type="number">
+      </md-input-container>
+
+      <md-input-container>
+        <md-checkbox name="reverse" ng-model="state.setup.reverse">
+          Reverse light direction
+        </md-checkbox>
+      </md-input-container>
+    </div>
+  </md-card-content>
+</md-card>
+

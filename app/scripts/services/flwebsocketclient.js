@@ -241,6 +241,10 @@ angular.module('flampeFrontendAngularApp')
           login: undefined,
           password: undefined
         }
+      },
+      setup: {
+        ledcount: 0,
+        reverse: false
       }
     };
     softCopy(upstreamState, $rootScope.state);
