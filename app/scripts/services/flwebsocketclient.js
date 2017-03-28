@@ -11,7 +11,7 @@ angular.module('flampeFrontendAngularApp')
   .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$timeout','$location','$mdToast','$translate', function ($websocket,$http,$rootScope,$interval,$timeout,$location,$mdToast,$translate) {
 
     // different WebSocket port when served from port 80
-    var wsApiUri = 'ws://' + $location.host() + ':' + ($location.port() === 80?81:3000) + '/api';
+    var wsApiUri = 'ws://' + $location.host() + ':' + ($location.port() === 80?81:3081) + '/api';
 
     var texts = {};
     $translate(['CONNECTED','CONNECTING','DISCONNECTED','RECONNECT']).then(function(translations){texts = translations;});
@@ -240,7 +240,9 @@ angular.module('flampeFrontendAngularApp')
       },
       setup: {
         ledcount: 0,
-        reverse: false
+        reverse: false,
+        orientation: 'vstrip',
+        colororder: 'RGB'
       }
     };
     softCopy(upstreamState, $rootScope.state);
