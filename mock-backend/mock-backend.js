@@ -83,14 +83,13 @@ app.use(function(req,res,next){
   return next();
 });
 
-app.get('/api', function(req, res, next){
-  res.json({status:'OK',data: state});
-});
-
 app.ws('/api', function(ws, req) {
   ws.on('message', function(msgText) {
     var msg = JSON.parse(msgText);
-    if (msg.action === 'push') {
+    if (msg.action === 'get') {
+      ws.send(JSON.stringify({action:'push',data: state}));
+      console.log('pushed state as get response');
+    } else if (msg.action === 'push') {
       var data = msg.data;
       softCopy(data, state);
 

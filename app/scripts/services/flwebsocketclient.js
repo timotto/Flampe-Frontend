@@ -8,17 +8,10 @@
  * Service in the flampeFrontendAngularApp.
  */
 angular.module('flampeFrontendAngularApp')
-  .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$location','$mdToast',function ($websocket,$http,$rootScope,$interval,$location,$mdToast) {
+  .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$timeout','$location','$mdToast',function ($websocket,$http,$rootScope,$interval,$timeout,$location,$mdToast) {
 
-    var wsApiUri,httpApiUri;
-    if ($location.port() === 80) {
-      wsApiUri = 'ws://' + $location.host() + ':81/api';
-      httpApiUri = 'http://' + $location.host() + ':80/api';
-    } else {
-      var part = '://' + $location.host() + ':3000/api';
-      wsApiUri = 'ws' + part;
-      httpApiUri = 'http' + part;
-    }
+    // different WebSocket port when served from port 80
+    var wsApiUri = 'ws://' + $location.host() + ':' + ($location.port() === 80?81:3000) + '/api';
 
     /**
      * assumes dst is not undefined and of same type as src (object or Array)
@@ -259,24 +252,33 @@ angular.module('flampeFrontendAngularApp')
       });
     });
 
-    /**
-     * Load the current state via HTTP GET request
-     * @returns {*} promise
-     */
-    function getState() {
-      return $http({
-        method: 'GET',
-        url: httpApiUri
-      }).then(function successCallback(response) {
-        upstreamState = response.data.data;
-        softCopy(upstreamState, $rootScope.state);
-      }, function errorCallback(response) {
-        console.log('backend get request failed',response);
-        showActionToast('Connection damaged');
-      });
+    var websocketConnectionCount = 0;
+
+    var websocketReconnectTimerId = undefined;
+    const websocketReconnectTimeoutMin = 500;
+    const websocketReconnectTimeoutMax = 5000;
+    var websocketReconnectTimeout = 0;
+
+    function cancelWebsocketReconnect() {
+      if (websocketReconnectTimerId !== undefined) {
+        $timeout.cancel(websocketReconnectTimerId);
+        websocketReconnectTimerId = undefined;
+      }
+      websocketReconnectTimeout = 0;
     }
 
-    var websocketConnectionCount = 0;
+    function startWebsocketReconnect() {
+      if (websocketReconnectTimeout < websocketReconnectTimeoutMin) {
+        websocketReconnectTimeout = websocketReconnectTimeoutMin;
+      } else if (websocketReconnectTimeout < websocketReconnectTimeoutMax) {
+        // exponential backoff
+        websocketReconnectTimeout = Math.min(websocketReconnectTimeoutMax, websocketReconnectTimeout * 2);
+      }
+      websocketReconnectTimerId = $timeout(function(){
+        websocketReconnectTimerId = undefined;
+        setupWebsocket();
+      }, websocketReconnectTimeout);
+    }
 
     function setupWebsocket() {
       dataStream = $websocket(wsApiUri);
@@ -289,6 +291,7 @@ angular.module('flampeFrontendAngularApp')
         }
       });
       dataStream.onOpen(function(){
+        cancelWebsocketReconnect();
         // don't show 'connected' toast on first connection, only after re-connects from errors
         if (websocketConnectionCount++ > 0) {
           var pinTo = getToastPosition();
@@ -303,6 +306,7 @@ angular.module('flampeFrontendAngularApp')
       });
       dataStream.onError(function(){
         showActionToast('Socket connection damaged');
+        startWebsocketReconnect();
       });
     }
 
@@ -344,7 +348,7 @@ angular.module('flampeFrontendAngularApp')
     var methods = {
       state: $rootScope.state,
       get: function() {
-        return getState();
+        dataStream.send(JSON.stringify({action:'get'}));
       },
       push: function(data) {
         dataStream.send(JSON.stringify({action:'push', data: data}));
