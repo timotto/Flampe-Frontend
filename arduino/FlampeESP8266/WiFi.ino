@@ -1,81 +1,171 @@
 #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
 //needed for library
 #include <DNSServer.h>
-#include <ESP8266WebServer.h>
-#include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
+#include <ESP8266mDNS.h>
 
-//flag for saving data
-bool shouldSaveConfig = false;
-
-//callback notifying us of the need to save config
-void saveConfigCallback () {
-  Serial.println("Should save config");
-  shouldSaveConfig = true;
-}
+int wifiConnectionFails = 0;
 
 void setup_wifi() {
-  // The extra parameters to be configured (can be either global or just in the setup)
-  // After connecting, parameter.getValue() will get you the configured value
-  // id/name placeholder/prompt default length
-  WiFiManagerParameter custom_mqtt_server("server", "mqtt server", mqtt_server, 40);
-  WiFiManagerParameter custom_mqtt_port("port", "mqtt port", mqtt_port, 5);
-  WiFiManagerParameter custom_mqtt_user("mqtt_user", "mqtt user", mqtt_user, 40);
-  WiFiManagerParameter custom_mqtt_password("mqtt_password", "mqtt password", mqtt_password, 40);
-  WiFiManagerParameter custom_wifi_ssid("wifi_ssid", "wifi ssid", wifi_ssid, 40);
-  WiFiManagerParameter custom_wifi_password("wifi_password", "wifi password", wifi_password, 40);
-  WiFiManagerParameter custom_hotspot_ssid("hotspot_ssid", "hotspot ssid", hotspot_ssid, 40);
-  WiFiManagerParameter custom_hotspot_password("hotspot_password", "hotspot password", hotspot_password, 40);
+  WiFi.onEvent(WiFiEvent);
+  reconfigureWifi();
 
-  //WiFiManager
-  //Local intialization. Once its business is done, there is no need to keep it around
-  WiFiManager wifiManager;
+  if(MDNS.begin("flampe-7")) {
+    MDNS.addService("http", "tcp", 80);
+    Serial.println("MDNS responder started");
+  }
+}
 
-  //set config save notify callback
-  wifiManager.setSaveConfigCallback(saveConfigCallback);
+void WiFiEvent(WiFiEvent_t event) {
+  
+  switch(event) {
+    case WIFI_EVENT_SOFTAPMODE_STACONNECTED:
+      break;
+    case WIFI_EVENT_SOFTAPMODE_STADISCONNECTED:
+      break;
+    case WIFI_EVENT_SOFTAPMODE_PROBEREQRECVED:
+      break;
+    case WIFI_EVENT_STAMODE_CONNECTED:
+      // almost there
+      break;
+    case WIFI_EVENT_STAMODE_GOT_IP:
+      wifiConnectionFails = 0;
+      Serial.println("WiFi connected");
+      Serial.println("IP address: ");
+      Serial.println(WiFi.localIP());
+      // TODO turn off AP with gracetime
+      break;
+    case WIFI_EVENT_STAMODE_DISCONNECTED:
+      if (wifiConnectionFails++ > 0) {
+        // know already
+        if (wifiConnectionFails == 3) {
+          // cancel with third attempt
+          WiFi.disconnect();
+          // TODO retry later
+        }
+        return;
+      }
+      Serial.println("WiFi lost connection");
+      // TODO turn on AP with gracetime
+      break;
+    default:
+      Serial.printf("[WiFi-event] event: %d\n", event);
+      break;
+  }
+}
 
-  //add all your parameters here
-  wifiManager.addParameter(&custom_mqtt_server);
-  wifiManager.addParameter(&custom_mqtt_port);
-  wifiManager.addParameter(&custom_mqtt_user);
-  wifiManager.addParameter(&custom_mqtt_password);
-  wifiManager.addParameter(&custom_wifi_ssid);
-  wifiManager.addParameter(&custom_wifi_password);
-  wifiManager.addParameter(&custom_hotspot_ssid);
-  wifiManager.addParameter(&custom_hotspot_password);
+void setWifiSsid(const char* value) {
+  strncpy(wifi_ssid, value, sizeof(wifi_ssid));
+}
 
-  //sets timeout until configuration portal gets turned off
-  //useful to make it all retry or go to sleep
-  //in seconds
-  //wifiManager.setTimeout(120);
+void setWifiPassword(const char* value) {
+  strncpy(wifi_password, value, sizeof(wifi_password));
+}
 
-  //fetches ssid and pass and tries to connect
-  //if it does not connect it starts an access point with the specified name
-  //here  "Flampe"
-  //and goes into a blocking loop awaiting configuration
-//  if (!wifiManager.autoConnect("AutoConnectAP", "password")) {
-  if (!wifiManager.autoConnect("Flampe")) {
-    Serial.println("failed to connect and hit timeout");
-    delay(3000);
-    //reset and try again, or maybe put it to deep sleep
-    ESP.reset();
-    delay(5000);
+void setHotspotSsid(const char* value) {
+  strncpy(hotspot_ssid, value, sizeof(hotspot_ssid));
+}
+
+void setHotspotPassword(const char* value) {
+  strncpy(hotspot_password, value, sizeof(hotspot_password));
+}
+
+void wifiReconnect(){
+  reconfigureWifi();
+}
+
+void hotspotReconnect(){
+  reconfigureWifi();
+}
+
+void reconfigureWifi() {
+  bool enableSta = false;
+  bool enableAp = false;
+  if(strlen(wifi_ssid) > 0) {
+    enableSta = true;
+  } else {
+    if (WiFi.isConnected()) {
+      WiFi.disconnect();
+    Serial.println("WiFi: Sta: disabled");
+    }
+  }
+  
+  if(strlen(hotspot_ssid) > 0) {
+    enableAp = true;
+  } else {
+    WiFi.softAPdisconnect();
+    Serial.println("WiFi: Ap: disabled");
+  }
+  
+  if(enableSta && enableAp) {
+    WiFi.mode(WIFI_AP_STA);
+    Serial.println("WiFi: AP & STA");
+  } else if (enableSta) {
+    WiFi.mode(WIFI_STA);
+    Serial.println("WiFi: STA");
+  } else if (enableAp) {
+    WiFi.mode(WIFI_AP);
+    Serial.println("WiFi: AP");
+  } else {
+    WiFi.disconnect(true);
+    WiFi.softAPdisconnect(true);
+    Serial.println("WiFi: disabled");
+    return;
   }
 
-  //if you get here you have connected to the WiFi
-  Serial.println("connected...yeey :)");
-
-  //read updated parameters
-  strcpy(mqtt_server, custom_mqtt_server.getValue());
-  strcpy(mqtt_port, custom_mqtt_port.getValue());
-  strcpy(mqtt_user, custom_mqtt_user.getValue());
-  strcpy(mqtt_password, custom_mqtt_password.getValue());
-  strcpy(wifi_ssid, custom_wifi_ssid.getValue());
-  strcpy(wifi_password, custom_wifi_password.getValue());
-  strcpy(hotspot_ssid, custom_hotspot_ssid.getValue());
-  strcpy(hotspot_password, custom_hotspot_password.getValue());
-
-  if (shouldSaveConfig) {
-    save_config();
+  if (enableSta) {
+    String ssStr = wifi_ssid;
+    if (strlen(wifi_password) > 0) {
+      String pwStr = wifi_password;
+      if(!(pwStr == WiFi.psk() && ssStr == WiFi.SSID())) {
+        WiFi.begin(wifi_ssid, wifi_password);
+        Serial.print("WiFi: Sta: SSID or PSK changed");
+        Serial.print(" SSID [");
+        Serial.print(wifi_ssid);
+        Serial.print("] and PSK [");
+        Serial.print(wifi_password);
+        Serial.println("]");
+      } else {
+        WiFi.begin();
+        Serial.print("WiFi: Sta: SSID and PSK are unchanged: ");
+        Serial.print(" SSID [");
+        Serial.print(wifi_ssid);
+        Serial.print("] and PSK [");
+        Serial.print(wifi_password);
+        Serial.println("]");
+      }
+    } else {
+      if(ssStr != WiFi.SSID()) {
+        WiFi.begin(wifi_ssid);
+        Serial.print("WiFi: Sta: SSID changed");
+        Serial.print(" SSID [");
+        Serial.print(wifi_ssid);
+        Serial.println("]");
+      } else {
+        WiFi.begin();
+        Serial.print("WiFi: Sta: SSID is unchanged");
+        Serial.print(" SSID [");
+        Serial.print(wifi_ssid);
+        Serial.println("]");
+      }
+    }
+  }
+  if (enableAp) {
+    if (strlen(hotspot_password) > 0) {
+      WiFi.softAP(hotspot_ssid, hotspot_password);
+      Serial.print("WiFi: Ap: SSID [");
+      Serial.print(hotspot_ssid);
+      Serial.print("] and PSK [");
+      Serial.print(hotspot_password);
+      Serial.println("]");
+    } else {
+      WiFi.softAP(hotspot_ssid);
+      Serial.print("WiFi: Ap: SSID [");
+      Serial.print(hotspot_ssid);
+      Serial.println("]");
+    }
+    IPAddress myIP = WiFi.softAPIP();
+    Serial.print("AP IP address: ");
+    Serial.println(myIP);
   }
 }
 

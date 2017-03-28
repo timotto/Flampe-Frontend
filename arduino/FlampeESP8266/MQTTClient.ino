@@ -2,33 +2,36 @@
 #include <PubSubClient.h>
 
 WiFiClient espClient;
-PubSubClient client(espClient);
+PubSubClient mqtt_client(espClient);
 
 long lastMsg = 0;
 char msg[50];
 int value = 0;
 
 void setup_mqtt() {
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
+  mqtt_client.setServer(mqtt_server, mqtt_port);
+  mqtt_client.setCallback(callback);
   
 }
 
 void loop_mqtt() {
-   if (!client.connected()) {
-    reconnect();
+   if (!mqtt_client.connected()) {
+    mqtt_reconnect();
   } else {
-    client.loop();
+    mqtt_client.loop();
   }
 }
 
 int reconnectStep = 0;
 uint32_t reconnectStepTime = 0;
-void reconnect() {
+void mqtt_reconnect() {
+  if (strlen(mqtt_server) == 0 || mqtt_port < 1) {
+    return;
+  }
   switch(reconnectStep) {
     case 0:
       // entry & exit case
-      if (client.connected()) {
+      if (mqtt_client.connected()) {
         return;
       }
       reconnectStep = 1;
@@ -37,58 +40,106 @@ void reconnect() {
       {
         // attempt connection
         Serial.print("Attempting MQTT connection...");
-        // Create a random client ID
-        String clientId = "ESP8266Client-";
-        clientId += String(random(0xffff), HEX);
         // Attempt to connect
-        if (client.connect(clientId.c_str())) {
+        if (mqtt_client.connect(mqtt_devicename)) {
           Serial.println("connected");
-          reconnectStep = 3;
+          // Once connected, publish an announcement...
+          mqttSend("{\"status\":\"online\"}");
+          mqttResubscribe();
+          Serial.println("MQTT connected, message sent");
+          reconnectStep = 0;
         } else {
           Serial.print("failed, rc=");
-          Serial.print(client.state());
+          Serial.print(mqtt_client.state());
           Serial.println(" try again in 5 seconds");
           reconnectStep = 2;
-          reconnectStepTime = millis() + 5000;
         }
       }
       break;
     case 2:
+      reconnectStep = 3;
+      reconnectStepTime = millis() + 5000;
+      break;
+    case 3:
       // connect failed
       if (millis() >= reconnectStepTime) {
         // Wait 5 seconds before retrying
         reconnectStep = 0;
       }
       break;
-    case 3:
-      // connected
-      // Once connected, publish an announcement...
-      client.publish("outTopic", "hello world");
-      // ... and resubscribe
-      client.subscribe("inTopic");
-      reconnectStep = 0;
-      Serial.println("MQTT connected, message sent");
-      break;
   }
 }
 
+void mqttResubscribe() {
+  if(strnlen(mqtt_intopic, sizeof(mqtt_intopic)) > 0) {
+    mqtt_client.subscribe(mqtt_intopic);
+  }
+}
+
+void mqttSend(const char* text, int length) {
+  if(strnlen(mqtt_outtopic, sizeof(mqtt_outtopic)) < 1) {
+    return;
+  }
+  mqtt_client.publish(mqtt_outtopic, text, length);
+}
+
+void mqttSend(const char* text) {
+  if(strnlen(mqtt_outtopic, sizeof(mqtt_outtopic)) < 1) {
+    return;
+  }
+  mqtt_client.publish(mqtt_outtopic, text);
+}
+
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
+  char buffer[length+1];
+  memcpy(buffer, payload, length);
+  buffer[length] = 0;
+  DynamicJsonBuffer jsonBuffer;
 
-  // Switch on the LED if an 1 was received as first character
-  if ((char)payload[0] == '1') {
-    digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
-    // but actually the LED is on; this is because
-    // it is acive low on the ESP-01)
-  } else {
-    digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
-  }
+  JsonObject& json = jsonBuffer.parseObject((char*)payload);
 
+  if (!json.success()) {
+    Serial.println("Unable to parse JSON");
+    return;
+  }
+  if (!(json.containsKey("action"))) {
+    Serial.println("no action in JSON - ignored");
+    return;
+  }
+  if (!(json.containsKey("data"))) {
+    Serial.println("no data in JSON - ignored");
+    return;
+  }
+  const char* action = json["action"];
+  if (mqtt_listen_commands && strncmp("push",action,4) == 0) {
+    Serial.println("Received push!");
+    JsonObject& pushData = json["data"];
+    apply_json_status(pushData, true);
+    status_cleanupJsonData(pushData, true, false);
+    websocketSend(buffer, length);
+    if (mqtt_publish_state) {
+      mqttSend(buffer);
+    }
+  }
+}
+
+void setMqttHost(const char* host) {
+  strncpy(mqtt_server, host, sizeof(mqtt_server));
+}
+
+void setMqttPort(int port) {
+  mqtt_port = port;
+}
+
+void setMqttLogin(const char* login) {
+  strncpy(mqtt_user, login, sizeof(mqtt_user));
+}
+
+void setMqttPassword(const char* password) {
+  strncpy(mqtt_password, password, sizeof(mqtt_password));
+}
+
+void mqttReconnect() {
+  mqtt_client.disconnect();
 }
 

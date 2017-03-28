@@ -1,10 +1,4 @@
-int brightness = 96;
-#define BRIGHTNESS_MIN  16
-#define BRIGHTNESS_MAX  240
-
 bool gReverseDirection = false;
-
-uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 
 // Fire2012 with programmable Color Palette
 //
@@ -33,22 +27,8 @@ uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 // The dynamic palette shows how you can change the basic 'hue' of the
 // color palette every time through the loop, producing "rainbow fire".
 
-#define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
-
-CRGBPalette16 gPal;
-CRGBPalette16 pallettes[] = {HeatColors_p,OceanColors_p,CloudColors_p,ForestColors_p,LavaColors_p,RainbowColors_p,PartyColors_p};
-
 void setup_led_fire() {
-  gPal = pallettes[gCurrentPatternNumber];
-  // These are other ways to set up the color palette for the 'fire'.
-  // First, a gradient from black to red to yellow to white -- similar to HeatColors_p
-  //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::Yellow, CRGB::White);
-  
-  // Second, this palette is like the heat colors, but blue/aqua instead of red/yellow
-  //   gPal = CRGBPalette16( CRGB::Black, CRGB::Blue, CRGB::Aqua,  CRGB::White);
-  
-  // Third, here's a simpler, three-step gradient, from black to red to white
-  //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::White);
+
 }
 
 uint32_t nextLedFireTime = 0;
@@ -66,35 +46,22 @@ void loop_ui() {
     char in = Serial.read();
     switch(in) {
       case '-':
-        gCurrentPatternNumber = (gCurrentPatternNumber + ARRAY_SIZE( pallettes) - 1) % ARRAY_SIZE( pallettes);
+        adjustPalette(-1);
         break;
       case '+':
-        gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( pallettes);
+        adjustPalette(+1);
         break;
       case 'b':
-        adjust_brightness(-16);
-        return;
+        adjustBrightness(-16);
+        break;
       case 'B':
-        adjust_brightness(16);
-        return;
-      default:
-        return;
+        adjustBrightness(16);
+        break;
     }
-    Serial.print("Pattern #: ");
-    Serial.println(gCurrentPatternNumber);
-    gPal = pallettes[gCurrentPatternNumber];
   }
 }
 
-#define flmax(a,b) (a>b?a:b)
-#define flmin(a,b) (a<b?a:b)
 
-void adjust_brightness(int direction) {
-  brightness = flmin(BRIGHTNESS_MAX, flmax(BRIGHTNESS_MIN, brightness + direction));
-  Serial.print("Brightness: ");
-  Serial.println(brightness);
-  FastLED.setBrightness( brightness );
-}
 // Fire2012 by Mark Kriegsman, July 2012
 // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
 //// 
@@ -169,11 +136,5 @@ void Fire2012WithPalette()
       }
       leds[pixelnumber] = color;
     }
-}
-
-void nextPattern()
-{
-  // add one to the current pattern number, and wrap around at the end
-  gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( pallettes);
 }
 
