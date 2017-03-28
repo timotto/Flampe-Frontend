@@ -2,6 +2,45 @@ var express = require('express');
 var expressWs = require('express-ws')(express());
 var app = expressWs.app;
 
+app.ws('/api', function(ws, req) {
+  ws.send(JSON.stringify({action:'push',data: {status: 'connected'}}));
+  ws.on('message', function(msgText) {
+    var msg = JSON.parse(msgText);
+    if (msg.action === 'get') {
+      ws.send(JSON.stringify({action:'push',data: state}));
+      console.log('pushed state as get response');
+    } else if (msg.action === 'push') {
+      var data = msg.data;
+      softCopy(data, state);
+
+      var aWss = expressWs.getWss('/');
+      aWss.clients.forEach(function (client) {
+        client.send(msgText);
+      });
+      console.log('forward push as broadcast [%s]',msgText)
+    } else {
+      console.error('got unknown ws msg',msg);
+    }
+  });
+});
+
+app.listen(3081);
+console.log('mock backend started');
+
+function softCopy(src,dst) {
+  Object.keys(src).forEach(function(srcKey){
+    var type = typeof src[srcKey];
+    if ('object' === type) {
+      if (dst[srcKey] === undefined) {
+        dst[srcKey] = {};
+      }
+      softCopy(src[srcKey], dst[srcKey]);
+    } else {
+      dst[srcKey] = src[srcKey];
+    }
+  });
+}
+
 var state = {
   brightness: parseInt(Math.random() * 100),
   primary: {
@@ -63,42 +102,3 @@ var state = {
     reverse: false
   }
 };
-
-function softCopy(src,dst) {
-  Object.keys(src).forEach(function(srcKey){
-    var type = typeof src[srcKey];
-    if ('object' === type) {
-      if (dst[srcKey] === undefined) {
-        dst[srcKey] = {};
-      }
-      softCopy(src[srcKey], dst[srcKey]);
-    } else {
-      dst[srcKey] = src[srcKey];
-    }
-  });
-}
-
-app.ws('/api', function(ws, req) {
-  ws.send(JSON.stringify({action:'push',data: {status: 'connected'}}));
-  ws.on('message', function(msgText) {
-    var msg = JSON.parse(msgText);
-    if (msg.action === 'get') {
-      ws.send(JSON.stringify({action:'push',data: state}));
-      console.log('pushed state as get response');
-    } else if (msg.action === 'push') {
-      var data = msg.data;
-      softCopy(data, state);
-
-      var aWss = expressWs.getWss('/');
-      aWss.clients.forEach(function (client) {
-        client.send(msgText);
-      });
-      console.log('forward push as broadcast [%s]',msgText)
-    } else {
-      console.error('got unknown ws msg',msg);
-    }
-  });
-});
-
-app.listen(3081);
-console.log('mock backend started');
