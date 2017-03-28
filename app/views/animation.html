@@ -40,18 +40,11 @@
       <md-option ng-repeat="(textkey,o) in settings.palettes" ng-value="textkey">{{textkey|translate}}</md-option>
     </md-select>
     <p>{{'BRIGHTNESS'|translate}}</p>
-    <md-slider-container>
-      <span></span>
-      <md-slider flex min="0" max="100" ng-model="settings.idleBrightness" aria-label="brightness" id="brightness-slider">
-      </md-slider>
-      <md-input-container>
-        <input flex type="number" ng-model="settings.idleBrightness" aria-label="brightness" aria-controls="brightness-slider">
-      </md-input-container>
-    </md-slider-container>
+    <md-slider flex min="0" max="100" ng-model="settings.idleBrightness" aria-label="brightness" id="brightness-slider">
+    </md-slider>
     <p>{{'TIMEOUT'|translate}}</p>
     <md-slider-container>
-      <span></span>
-      <md-slider flex min="0" max="100" ng-model="settings.idleTimeout" aria-label="timeout" id="timeout-slider">
+      <md-slider flex min="0" max="1000" ng-model="settings.idleTimeout" aria-label="timeout" id="timeout-slider">
       </md-slider>
       <md-input-container>
         <input flex type="number" ng-model="settings.idleTimeout" aria-label="timeout" aria-controls="timeout-slider">
