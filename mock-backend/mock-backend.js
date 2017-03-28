@@ -1,5 +1,22 @@
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
 var express = require('express');
-var expressWs = require('express-ws')(express());
+
+var expressApp = express();
+var server;
+try {
+  server = https.createServer({
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+  }, expressApp);
+  console.log('started secure WSS server');
+} catch(e) {
+  server = http.createServer(expressApp);
+  console.log('started plain WS server');
+}
+
+var expressWs = require('express-ws')(expressApp);
 var app = expressWs.app;
 
 app.ws('/api', function(ws, req) {
@@ -24,7 +41,7 @@ app.ws('/api', function(ws, req) {
   });
 });
 
-app.listen(3081);
+server.listen(3081);
 console.log('mock backend started');
 
 function softCopy(src,dst) {
