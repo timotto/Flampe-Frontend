@@ -103,6 +103,11 @@ angular.module('flampeFrontendAngularApp')
       ANIM_JUGGLE: 'Juggle',
       ANIM_RAINBOW: 'Rainbow',
       RANDOMIZE: 'Randomize',
+      RECONNECT: 'Reconnect',
+      CONNECTED: 'connected',
+      DISCONNECTED: 'disconnected',
+      CONNECTING: 'connecting',
+
       BUTTON_LANG_EN: 'English',
       BUTTON_LANG_DE: 'German'
     });

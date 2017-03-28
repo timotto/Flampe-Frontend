@@ -103,7 +103,7 @@ angular
   }])
   // must use flWebsocket once, so it loads data and establishes web socket. Afterwards just $rootScope is used
   .controller('NavigationController',['$scope','$mdSidenav','$location','flWebsocket',function($scope,$mdSidenav,$location,flWebsocket){
-    flWebsocket.get();
+    flWebsocket.login();
 
     $scope.toggleMenu = function() {
       $mdSidenav('left').toggle();

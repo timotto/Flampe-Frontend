@@ -8,10 +8,13 @@
  * Service in the flampeFrontendAngularApp.
  */
 angular.module('flampeFrontendAngularApp')
-  .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$timeout','$location','$mdToast',function ($websocket,$http,$rootScope,$interval,$timeout,$location,$mdToast) {
+  .factory('flWebsocket',['$websocket','$http','$rootScope','$interval','$timeout','$location','$mdToast','$translate', function ($websocket,$http,$rootScope,$interval,$timeout,$location,$mdToast,$translate) {
 
     // different WebSocket port when served from port 80
     var wsApiUri = 'ws://' + $location.host() + ':' + ($location.port() === 80?81:3000) + '/api';
+
+    var texts = {};
+    $translate(['CONNECTED','CONNECTING','DISCONNECTED','RECONNECT']).then(function(translations){texts = translations;});
 
     /**
      * assumes dst is not undefined and of same type as src (object or Array)
@@ -43,7 +46,6 @@ angular.module('flampeFrontendAngularApp')
      * {a:{b:'b'},c:'c'} -> ['a.b','c']
      * {a:{b:'b',c:{d:'d',e:'e'}},f:'f'} -> ['a.b','a.c.d','a.c.e','f']
      * @param o
-     * @param trail
      * @returns {Array}
      */
     function objectPaths(o) {
@@ -194,6 +196,7 @@ angular.module('flampeFrontendAngularApp')
 
     $rootScope.state = {};
     var upstreamState = {
+      status: 'disconnected',
       brightness: undefined,
       primary: {red:undefined,green:undefined,blue:undefined},
       accent: {red:undefined,green:undefined,blue:undefined},
@@ -254,7 +257,7 @@ angular.module('flampeFrontendAngularApp')
 
     var websocketConnectionCount = 0;
 
-    var websocketReconnectTimerId = undefined;
+    var websocketReconnectTimerId;
     const websocketReconnectTimeoutMin = 500;
     const websocketReconnectTimeoutMax = 5000;
     var websocketReconnectTimeout = 0;
@@ -264,7 +267,6 @@ angular.module('flampeFrontendAngularApp')
         $timeout.cancel(websocketReconnectTimerId);
         websocketReconnectTimerId = undefined;
       }
-      websocketReconnectTimeout = 0;
     }
 
     function startWebsocketReconnect() {
@@ -281,6 +283,14 @@ angular.module('flampeFrontendAngularApp')
     }
 
     function setupWebsocket() {
+
+      cancelWebsocketReconnect();
+
+      if (dataStream !== undefined) {
+        // if there still was some stream, close it now
+        dataStream.close(true);
+      }
+      console.log('ws connecting');
       dataStream = $websocket(wsApiUri);
 
       dataStream.onMessage(function(message) {
@@ -291,6 +301,10 @@ angular.module('flampeFrontendAngularApp')
         }
       });
       dataStream.onOpen(function(){
+        console.log('ws connected');
+        dataStream.send(JSON.stringify({action:'get'}));
+
+        websocketReconnectTimeout = 0;
         cancelWebsocketReconnect();
         // don't show 'connected' toast on first connection, only after re-connects from errors
         if (websocketConnectionCount++ > 0) {
@@ -304,9 +318,15 @@ angular.module('flampeFrontendAngularApp')
           );
         }
       });
-      dataStream.onError(function(){
-        showActionToast('Socket connection damaged');
-        startWebsocketReconnect();
+      dataStream.onClose(function(){
+          console.log('ws closed');
+          $rootScope.state.status = upstreamState.status = 'disconnected';
+          startWebsocketReconnect();
+          showActionToast(texts.DISCONNECTED);
+        }
+      );
+      dataStream.onError(function(e){
+        console.error('ws error',e);
       });
     }
 
@@ -326,7 +346,7 @@ angular.module('flampeFrontendAngularApp')
       var pinTo = getToastPosition();
       var toast = $mdToast.simple()
         .textContent(text)
-        .action('Reconnect')
+        .action(texts.RECONNECT)
         .hideDelay(5000)
         .highlightAction(true)
         .highlightClass('md-warn')// Accent is used by default, this just demonstrates the usage.
@@ -352,7 +372,8 @@ angular.module('flampeFrontendAngularApp')
       },
       push: function(data) {
         dataStream.send(JSON.stringify({action:'push', data: data}));
-      }
+      },
+      login: function(){}
     };
 
     return methods;

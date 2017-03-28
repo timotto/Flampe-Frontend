@@ -84,6 +84,7 @@ app.use(function(req,res,next){
 });
 
 app.ws('/api', function(ws, req) {
+  ws.send(JSON.stringify({action:'push',data: {status: 'connected'}}));
   ws.on('message', function(msgText) {
     var msg = JSON.parse(msgText);
     if (msg.action === 'get') {
@@ -98,6 +99,8 @@ app.ws('/api', function(ws, req) {
         client.send(msgText);
       });
       console.log('forward push as broadcast [%s]',msgText)
+    } else {
+      console.error('got unknown ws msg',msg);
     }
   });
 });

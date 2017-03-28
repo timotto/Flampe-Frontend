@@ -99,6 +99,11 @@ angular.module('flampeFrontendAngularApp')
       ANIM_JUGGLE: 'Jonglieren',
       ANIM_RAINBOW: 'Regenbogen',
       RANDOMIZE: 'Zufällig',
+      RECONNECT: 'Reparieren',
+      CONNECTED: 'verbunden',
+      DISCONNECTED: 'getrennt',
+      CONNECTING: 'verbinde',
+
       BUTTON_LANG_EN: 'englisch',
       BUTTON_LANG_DE: 'deutsch'
     });
