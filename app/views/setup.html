@@ -53,17 +53,25 @@
     </div>
     <div layout-gt-sm="row">
       <div flex-gt-sm="50" layout="column" ng-if="state.setup.orientation === 'zigzag'">
-        <p>Strip length to count ratio</p>
-        <md-slider flex min="1" max="{{striplengths.length}}" ng-model="stripcountindex" aria-label="angle" id="stripcount-slider">
-        </md-slider>
+        <div layout="column">
+          <p>Strip length to count ratio</p>
+          <md-slider-container>
+            <md-slider flex min="0" max="{{stripcounts.length-1}}" aria-label="stripcount" id="stripcount-slider"
+                       ng-model="stripcountindex"
+                       ng-change="state.setup.stripcount = stripcounts[stripcountindex]" >
+            </md-slider>
+          </md-slider-container>
+        </div>
         <div layout="row">
           <md-input-container flex-gt-sm="50">
-            <label>Strip length</label>
-            <input disabled readonly ng-model="state.setup.striplength" ng-value="striplengths[stripcountindex-1]">
+            <label>Strip count</label>
+            <input disabled readonly
+                   ng-model="state.setup.stripcount">
           </md-input-container>
           <md-input-container flex-gt-sm="50">
-            <label>Strip count</label>
-            <input disabled readonly ng-value="state.setup.ledcount / striplengths[stripcountindex-1]">
+            <label>Strip length</label>
+            <input disabled readonly
+                   ng-value="state.setup.ledcount / state.setup.stripcount">
           </md-input-container>
         </div>
       </div>

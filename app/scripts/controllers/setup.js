@@ -48,38 +48,22 @@ angular.module('flampeFrontendAngularApp')
         if (num % i === 0) { result.push(i); }
       }
 
-      result.push(num);
-      console.log('factorize result for %d = [%s]', num, result.join(','));
-      return result.reverse();
+      // result.push(num);
+      return result;
     }
 
-    function updateStriplengths() {
-      $scope.striplengths = factorize($scope.state.setup.ledcount);
-      if ($scope.striplengths.indexOf($scope.stripcount) === -1) {
-        console.log('before $scope.stripcount=%d',$scope.stripcount);
-        $scope.stripcount = $scope.striplengths.map(function (l) {
-          return {length:l,distance:Math.abs($scope.stripcount - l)};
-        }).sort(function(a,b){
-          return a.distance - b.distance;
-        }).shift().length;
-        if (isNaN($scope.stripcount)) {
-          console.log('isNan situation', $scope.stripcount);
-          $scope.stripcount = $scope.striplengths[Math.floor($scope.striplengths / 2)];
-        }
-        $scope.stripcountindex = $scope.striplengths.indexOf($scope.stripcount);
-        console.log('stripcountindex=%d $scope.stripcount=%d striplengths=%s',$scope.stripcountindex,$scope.stripcount,$scope.striplengths.join(','));
-      }
-    }
-    $scope.stripcount = 1;
-    $scope.striplengths = [0];
-    $scope.stripcountindex = 1;
-    $scope.stripcount = $scope.striplengths[0];
+    $scope.stripcountindex = 0;
+    $scope.stripcounts = factorize($scope.state.setup.ledcount);
+    $scope.stripcountindex = $scope.stripcounts.indexOf($scope.state.setup.stripcount);
     $scope.ledsPer = ledsPer;
     $scope.stripCount = stripCount;
-    $scope.striplength = $scope.striplengths[$scope.stripcountindex-1];
 
     $scope.$watch('state.setup.ledcount',function(){
-      updateStriplengths();
+      $scope.stripcounts = factorize($scope.state.setup.ledcount);
+      if ($scope.stripcounts.indexOf($scope.state.setup.stripcount) === -1) {
+        $scope.stripcountindex = Math.floor($scope.stripcounts.length / 2);
+        $scope.state.setup.stripcount = $scope.stripcounts[$scope.stripcountindex];
+        console.log('address! index=%d count=%d',$scope.stripcountindex,$scope.state.setup.stripcount)
+      }
     });
-
   }]);

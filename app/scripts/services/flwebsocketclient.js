@@ -259,7 +259,7 @@ angular.module('flampeFrontendAngularApp')
         reverse: false,
         orientation: 'strip',
         colororder: 'RGB',
-        striplength: 1,
+        stripcount: 1,
         turns: 1,
         dimensions: 2
       }

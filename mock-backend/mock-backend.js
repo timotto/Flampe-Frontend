@@ -103,7 +103,7 @@ var state = {
     reverse: false,
     orientation: 'spiral',
     colororder: 'RGB',
-    striplength: 13,
+    stripcount: 7,
     turns: 19,
     dimensions: 3
   }
