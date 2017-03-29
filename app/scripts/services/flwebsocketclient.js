@@ -253,7 +253,26 @@ angular.module('flampeFrontendAngularApp')
         ledcount: 0,
         reverse: false,
         orientation: 'vstrip',
-        colororder: 'RGB'
+        colororder: 'RGB',
+
+        shape: 'curved',
+        curved: {
+          degree: 360
+        },
+        angled: {
+          count: 3,
+          missing: 0
+        },
+        zigzag: {
+          striplength: 1
+        },
+        spiral: {
+          turns: 1
+        },
+        ball: {
+          turns: 1,
+          ledscenter: 1
+        }
       }
     };
     softCopy(upstreamState, $rootScope.state);
