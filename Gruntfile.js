@@ -22,7 +22,8 @@ module.exports = function (grunt) {
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
+    dist: 'dist',
+    dataw: 'arduino/FlampeESP8266/data/w'
   };
 
   // Define the configuration for all the tasks
@@ -167,7 +168,7 @@ module.exports = function (grunt) {
           ]
         }]
       },
-      arduino: 'arduino/FlampeESP8266/data/w',
+      arduino: '<%= yeoman.dataw %>',
       server: '.tmp'
     },
 
@@ -415,7 +416,7 @@ module.exports = function (grunt) {
       arduino: {
         expand: true,
         cwd: 'compressed',
-        dest: 'arduino/FlampeESP8266/data/w/',
+        dest: '<%= yeoman.dataw %>',
         src: '**/*'
       },
       styles: {
@@ -430,8 +431,8 @@ module.exports = function (grunt) {
       arduino: {
         files: [
           {
-            src: 'arduino/FlampeESP8266/data/w/index.html.gz',
-            dest: 'arduino/FlampeESP8266/data/w/index.htm.gz'
+            src: '<%= yeoman.dataw %>/index.html.gz',
+            dest: '<%= yeoman.dataw %>/index.htm.gz'
           }
         ]
       }
