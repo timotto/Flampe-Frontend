@@ -33,6 +33,10 @@ angular.module('flampeFrontendAngularApp')
      * @param dst
      */
     function softCopy(src,dst) {
+      if (src === undefined || src === null) {
+        console.warn('tried softCopy with undefined or null src');
+        return;
+      }
       Object.keys(src).forEach(function(srcKey){
         var item = src[srcKey];
 
@@ -250,29 +254,14 @@ angular.module('flampeFrontendAngularApp')
         }
       },
       setup: {
-        ledcount: 0,
+        ledpin: 7,
+        ledcount: 1,
         reverse: false,
-        orientation: 'vstrip',
+        orientation: 'strip',
         colororder: 'RGB',
-
-        shape: 'curved',
-        curved: {
-          degree: 360
-        },
-        angled: {
-          count: 3,
-          missing: 0
-        },
-        zigzag: {
-          striplength: 1
-        },
-        spiral: {
-          turns: 1
-        },
-        ball: {
-          turns: 1,
-          ledscenter: 1
-        }
+        striplength: 1,
+        turns: 1,
+        dimensions: 2
       }
     };
     softCopy(upstreamState, $rootScope.state);

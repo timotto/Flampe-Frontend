@@ -50,28 +50,36 @@ angular.module('flampeFrontendAngularApp')
 
       result.push(num);
       console.log('factorize result for %d = [%s]', num, result.join(','));
-      return result;
+      return result.reverse();
     }
 
-    function updateStriplengths(x) {
-      $scope.striplengths = factorize(x);
+    function updateStriplengths() {
+      $scope.striplengths = factorize($scope.state.setup.ledcount);
       if ($scope.striplengths.indexOf($scope.stripcount) === -1) {
+        console.log('before $scope.stripcount=%d',$scope.stripcount);
         $scope.stripcount = $scope.striplengths.map(function (l) {
           return {length:l,distance:Math.abs($scope.stripcount - l)};
         }).sort(function(a,b){
           return a.distance - b.distance;
-        }).shift();
+        }).shift().length;
+        if (isNaN($scope.stripcount)) {
+          console.log('isNan situation', $scope.stripcount);
+          $scope.stripcount = $scope.striplengths[Math.floor($scope.striplengths / 2)];
+        }
         $scope.stripcountindex = $scope.striplengths.indexOf($scope.stripcount);
+        console.log('stripcountindex=%d $scope.stripcount=%d striplengths=%s',$scope.stripcountindex,$scope.stripcount,$scope.striplengths.join(','));
       }
     }
-    $scope.$watch('state.setup.ledcount',function(x){
-      updateStriplengths(x);
-    });
-
-    $scope.striplengths = factorize($scope.state.setup.ledcount);
+    $scope.stripcount = 1;
+    $scope.striplengths = [0];
     $scope.stripcountindex = 1;
     $scope.stripcount = $scope.striplengths[0];
     $scope.ledsPer = ledsPer;
     $scope.stripCount = stripCount;
+    $scope.striplength = $scope.striplengths[$scope.stripcountindex-1];
+
+    $scope.$watch('state.setup.ledcount',function(){
+      updateStriplengths();
+    });
 
   }]);
