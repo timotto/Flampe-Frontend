@@ -6,6 +6,16 @@ const char *paletteTextkeys[] = {"PALETTE_BASE","PALETTE_BASE2","PALETTE_BASE3",
 const int animationTextkeysCount = 6;
 const int paletteTextkeysCount = 10;
 
+const char *JS_setup = "setup";
+const char *JS_ledpin = "ledpin";
+const char *JS_ledcount = "ledcount";
+const char *JS_stripcount = "stripcount";
+const char *JS_orientation = "orientation";
+const char *JS_orientationStrip = "strip";
+const char *JS_orientationZigzag = "zigzag";
+const char *JS_orientationSpiral = "spiral";
+const char *JS_reverse = "reverse";
+
 const char *WS_action = "action";
 const char *WS_actionGet = "get";
 const char *WS_actionPush = "push";

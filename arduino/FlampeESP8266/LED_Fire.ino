@@ -27,8 +27,11 @@ bool gReverseDirection = false;
 // The dynamic palette shows how you can change the basic 'hue' of the
 // color palette every time through the loop, producing "rainbow fire".
 
-void setup_led_fire() {
+// Array of temperature readings at each simulation cell
+byte *heat;
 
+void setup_led_fire() {
+  heat = (byte*)malloc(ledCount);
 }
 
 uint32_t nextLedFireTime = 0;
@@ -38,7 +41,6 @@ void loop_led_fire() {
   if (now < nextLedFireTime) return;
   nextLedFireTime = now + (1000 / FRAMES_PER_SECOND);
   Fire2012WithPalette(); // run simulation frame, using palette colors
-  FastLED.show(); // display this frame
 }
 
 void loop_ui() {
@@ -103,16 +105,13 @@ void loop_ui() {
 
 void Fire2012WithPalette()
 {
-// Array of temperature readings at each simulation cell
-  static byte heat[NUM_LEDS];
-
   // Step 1.  Cool down every cell a little
-    for( int i = 0; i < NUM_LEDS; i++) {
-      heat[i] = qsub8( heat[i],  random8(0, ((COOLING * 10) / NUM_LEDS) + 2));
+    for( int i = 0; i < ledCount; i++) {
+      heat[i] = qsub8( heat[i],  random8(0, ((COOLING * 10) / ledCount) + 2));
     }
   
     // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-    for( int k= NUM_LEDS - 1; k >= 2; k--) {
+    for( int k= ledCount - 1; k >= 2; k--) {
       heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
     }
     
@@ -123,14 +122,14 @@ void Fire2012WithPalette()
     }
 
     // Step 4.  Map from heat cells to LED colors
-    for( int j = 0; j < NUM_LEDS; j++) {
+    for( int j = 0; j < ledCount; j++) {
       // Scale the heat value from 0-255 down to 0-240
       // for best results with color palettes.
       byte colorindex = scale8( heat[j], 240);
       CRGB color = ColorFromPalette( gPal, colorindex);
       int pixelnumber;
       if( gReverseDirection ) {
-        pixelnumber = (NUM_LEDS-1) - j;
+        pixelnumber = (ledCount-1) - j;
       } else {
         pixelnumber = j;
       }

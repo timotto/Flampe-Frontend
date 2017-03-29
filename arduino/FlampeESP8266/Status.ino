@@ -47,6 +47,12 @@ void setup_status() {
 }
 
 void create_default_status() {
+  setup_ledPin = 12;
+  setup_ledCount = 1;
+  setup_stripCount = 1;
+  setup_orientation = 0;
+  setup_ledReverse = false;
+  
   brightness = 0;
   primaryColor = CRGB(123,140,42);
   accentColor = CRGB(223,190,242);
@@ -98,6 +104,17 @@ void dump_json_color(JsonObject& jsonColor, CRGB* color) {
 }
 
 void create_status_object(JsonObject& jsonStatus) {
+  JsonObject& setup = jsonStatus.createNestedObject("setup");
+  setup[JS_ledpin] = setup_ledCount;
+  setup[JS_ledcount] = setup_ledCount;
+  setup[JS_stripcount] = setup_stripCount;
+  setup[JS_reverse] = setup_ledReverse;
+  switch(setup_orientation) {
+    case 0: setup[JS_orientation] = JS_orientationStrip; break;
+    case 1: setup[JS_orientation] = JS_orientationZigzag; break;
+    case 2: setup[JS_orientation] = JS_orientationSpiral; break;
+  }
+  
   jsonStatus["brightness"] = brightness;
   
   JsonObject& primary = jsonStatus.createNestedObject("primary");
@@ -181,6 +198,8 @@ int indexInArray(const char *a[], int size, const char *txt) {
 
 #define CONTAINS_AND_OTHER(j,a,b) (j.containsKey(a) && strncmp(b, j[a], sizeof(b)) != 0)
 #define CONTAINS_AND_OTHERi(j,a,b) (j.containsKey(a) && b != j[a])
+#define SET_WHEN_CONTAINS_AND_OTHERs(j,a,b) if(CONTAINS_AND_OTHER(j,a,b))strncpy(b, j[a], sizeof(b)
+#define SET_WHEN_CONTAINS_AND_OTHERi(j,a,b) if(CONTAINS_AND_OTHERi(j,a,b))b=j[a]
 
 void copyJsonColor(JsonObject& jsonColor, CRGB* color) {
   if(jsonColor.containsKey(TK_colorRed)) {
@@ -196,6 +215,24 @@ void copyJsonColor(JsonObject& jsonColor, CRGB* color) {
 }
 
 void apply_json_status(JsonObject& root, bool applyAndSave) {
+  if (root.containsKey(JS_setup)) {
+    JsonObject& setup = root.get(JS_setup);
+    SET_WHEN_CONTAINS_AND_OTHERi(setup,JS_ledpin,setup_ledPin);
+    SET_WHEN_CONTAINS_AND_OTHERi(setup,JS_ledcount,setup_ledCount);
+    SET_WHEN_CONTAINS_AND_OTHERi(setup,JS_stripcount,setup_stripCount);
+    SET_WHEN_CONTAINS_AND_OTHERi(setup,JS_reverse,setup_ledReverse);
+    if(setup.containsKey(JS_orientation)) {
+      if(strcmp(setup[JS_orientation], JS_orientationStrip) == 0) {
+        setup_orientation = 0;
+      } else
+      if(strcmp(setup[JS_orientation], JS_orientationZigzag) == 0) {
+        setup_orientation = 1;
+      } else
+      if(strcmp(setup[JS_orientation], JS_orientationSpiral) == 0) {
+        setup_orientation = 2;
+      }
+    }
+  }
   if (root.containsKey("brightness")) {
     setBrightness(root["brightness"], applyAndSave);
   }

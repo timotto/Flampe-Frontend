@@ -12,8 +12,13 @@ FASTLED_USING_NAMESPACE
 //#define CLK_PIN   4
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define NUM_LEDS    24
-CRGB leds[NUM_LEDS];
+//#define NUM_LEDS    24
+//#define LED_STRIPS      3
+
+//CRGB leds[NUM_LEDS];
+//CRGB ledsShadow[NUM_LEDS];
+CRGB *leds;
+CRGB *ledsShadow;
 
 #define BRIGHTNESS          96
 #define FRAMES_PER_SECOND  120
@@ -37,17 +42,36 @@ void bpm(){};
 CRGBPalette16 gPal, userPalette, userPalette2, userPalette3;
 CRGBPalette16 pallettes[] = {userPalette,userPalette2,userPalette3,HeatColors_p,OceanColors_p,CloudColors_p,ForestColors_p,LavaColors_p,RainbowColors_p,PartyColors_p};
 
+// set during setup_led() which runs after setup_status()
+int ledCount;
+int stripCount;
+int ledOrientation;
+int ledsPerStrip;
 
 void setup_led() {
-  delay(3000); // 3 second delay for recovery
+  // set setup values read by setup_status()
+  ledOrientation = setup_orientation;
+  if (stripCount < 1) { stripCount = 1; }
+  ledCount = setup_ledCount;
+  if (ledCount < 1) { ledCount = 1; }
+  stripCount = setup_stripCount;
+  if (stripCount < 1) { stripCount = 1; }
+  // calculate constants based on that
+  ledsPerStrip = ledCount /  stripCount;
+  // initialize ram stuff
+  leds = (CRGB*)malloc(ledCount * sizeof(CRGB));
+  ledsShadow = (CRGB*)malloc(ledCount * sizeof(CRGB));
+  
+  delay(1000); // 1 second delay for recovery
   
   // tell FastLED about the LED strip configuration
-  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(ledsShadow, ledCount).setCorrection(TypicalLEDStrip);
 
   setUserPalette();
   setBrightness(brightness);
   setPalette(currentPalette);
   setAnimation(currentAnimation);
+  
   setup_led_fire();
 }
 
@@ -65,6 +89,38 @@ void loop_led() {
 //    dot = (dot + 1) % NUM_LEDS;
 //    next = now + 10;
 //  }
+  remap_leds();
+  FastLED.show();
+}
+
+inline void remap_leds() {
+  switch(ledOrientation) {
+    case 0:
+      // strip
+      memcpy(ledsShadow, leds, ledCount * sizeof(CRGB));
+      break;
+    case 1: {
+      // zigzag
+      for(int led=0;led<ledCount;led++) {
+        // x axis
+        const int strip = led % stripCount;
+        // position on the y axis
+        const int y = led / stripCount;
+        // from or towards origin
+        const int offset = strip%2==0
+          // from origin for even
+          ?y
+          // odd strips go towards origin, and back to index 0 based
+          :ledsPerStrip-y-1;
+        const int destIndex = (strip * ledsPerStrip) + offset;
+        ledsShadow[destIndex] = leds[led];
+      }
+      break; }
+    case 2:
+      // spiral
+      memcpy(ledsShadow, leds, ledCount * sizeof(CRGB));
+      break;
+  }
 }
 
 void adjustBrightness(int direction) {

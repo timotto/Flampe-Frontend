@@ -7,6 +7,12 @@
 const char* www_username = "admin";
 const char* www_password = "esp8266";
 
+int setup_ledPin;
+int setup_ledCount;
+bool setup_ledReverse;
+int setup_orientation;
+int setup_stripCount;
+
 int brightness = 0;
 CRGB primaryColor = CRGB(0,0,0);
 CRGB accentColor = CRGB(0,0,0);
