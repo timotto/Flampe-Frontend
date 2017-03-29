@@ -167,6 +167,7 @@ module.exports = function (grunt) {
           ]
         }]
       },
+      arduino: 'arduino/FlampeESP8266/data/w',
       server: '.tmp'
     },
 
@@ -411,11 +412,28 @@ module.exports = function (grunt) {
           src: ['generated/*']
         }]
       },
+      arduino: {
+        expand: true,
+        cwd: 'compressed',
+        dest: 'arduino/FlampeESP8266/data/w/',
+        src: '**/*'
+      },
       styles: {
         expand: true,
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      }
+    },
+
+    rename: {
+      arduino: {
+        files: [
+          {
+            src: 'arduino/FlampeESP8266/data/w/index.html.gz',
+            dest: 'arduino/FlampeESP8266/data/w/index.htm.gz'
+          }
+        ]
       }
     },
 
@@ -488,8 +506,15 @@ module.exports = function (grunt) {
     'uglify',
     'filerev',
     'usemin',
-    'htmlmin',
-    'compress'
+    'htmlmin'
+  ]);
+
+  grunt.registerTask('arduino', [
+    'build',
+    'clean:arduino',
+    'compress',
+    'copy:arduino',
+    'rename:arduino'
   ]);
 
   grunt.registerTask('default', [
