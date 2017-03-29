@@ -9,16 +9,103 @@
     </md-card-title-media>
   </md-card-title>
   <md-card-content layout-gt-sm="row">
-    <div>
+    <div flex-gt-sm="50" layout="column">
       <md-input-container>
         <label>LED count</label>
         <input ng-model="state.setup.ledcount" type="number">
       </md-input-container>
-
+      <md-input-container flex-gt-sm="50">
+        <label>LED orientation</label>
+        <md-select ng-model="state.setup.orientation" aria-label="LED orientation">
+          <md-option ng-value="'hstrip'">Horizontal strip</md-option>
+          <md-option ng-value="'vstrip'">Vertical strip</md-option>
+          <md-option ng-value="'zigzag'">Zig/zag stripes</md-option>
+          <md-option ng-value="'spiral'">Spiral</md-option>
+          <md-option ng-value="'ball'">Ball</md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+    <div flex-gt-sm="50" layout="column">
+      <md-input-container flex-gt-sm="50">
+        <label>Color order</label>
+        <md-select ng-model="state.setup.colororder" aria-label="Color order">
+          <md-option ng-value="'RGB'">RGB</md-option>
+          <md-option ng-value="'GRB'">GRB</md-option>
+          <md-option ng-value="'BRG'">BRG</md-option>
+          <md-option ng-value="'BGR'">BGR</md-option>
+          <md-option ng-value="'RBG'">RBG</md-option>
+          <md-option ng-value="'GBB'">GBB</md-option>
+          <md-option ng-value="'GRBW'">RGBW</md-option>
+        </md-select>
+      </md-input-container>
       <md-input-container>
-        <md-checkbox name="reverse" ng-model="state.setup.reverse">
-          Reverse light direction
+        <md-checkbox name="state.setup.reverse" ng-model="state.setup.reverse">
+          Reverse strip direction
         </md-checkbox>
+      </md-input-container>
+    </div>
+  </md-card-content>
+</md-card>
+<md-card ng-if="['zigzag','spiral','ball'].indexOf(state.setup.orientation) != -1">
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">LED orientation</span>
+      <span class="md-subhead">{{state.setup.orientation}} details</span>
+    </md-card-title-text>
+  </md-card-title>
+  <md-card-content layout-gt-sm="row">
+    <div flex-gt-sm="50" layout="column" ng-if="state.setup.orientation === 'zigzag'">
+      <md-slider-container>
+        <md-slider flex min="1" max="{{striplengths.length}}" ng-model="stripcountindex" aria-label="angle" id="stripcount-slider">
+        </md-slider>
+      </md-slider-container>
+      <div layout="row">
+        <md-input-container flex-gt-sm="50">
+          <label>Strip length</label>
+          <input ng-value="striplengths[stripcountindex-1]">
+        </md-input-container>
+        <md-input-container flex-gt-sm="50">
+          <label>Strips</label>
+          <input ng-value="state.setup.ledcount / striplengths[stripcountindex-1]">
+        </md-input-container>
+      </div>
+    </div>
+    <div flex-gt-sm="50" layout="column" ng-if="state.setup.orientation === 'zigzag'">
+      <md-input-container flex-gt-sm="50">
+        <label>Shape</label>
+        <md-select ng-model="state.setup.shape" aria-label="Shape">
+          <md-option ng-value="'flat'">Flat / 2D</md-option>
+          <md-option ng-value="'curve'">Cylinder / 3D</md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container flex-gt-sm="50">
+        <md-checkbox name="state.setup.rotate" ng-model="state.setup.rotate">
+          Rotate 90 degree
+        </md-checkbox>
+      </md-input-container>
+    </div>
+    <div flex-gt-sm="50" layout="row" ng-if="state.setup.orientation === 'spiral'">
+      <md-input-container>
+        <label>Turns</label>
+        <input ng-model="state.setup.spiral.turns">
+      </md-input-container>
+      <md-input-container flex-gt-sm="50">
+        <label>LEDs per turn</label>
+        <input ng-value="ledsPer(state.setup.spiral.turns, 1)">
+      </md-input-container>
+    </div>
+    <div flex-gt-sm="100" layout="row" ng-if="state.setup.orientation === 'ball'">
+      <md-input-container flex-gt-sm="33">
+        <label>Turns</label>
+        <input ng-model="state.setup.ball.turns">
+      </md-input-container>
+      <md-input-container flex-gt-sm="33">
+        <label>LEDs per turn at center</label>
+        <input ng-model="state.setup.ball.ledscenter">
+      </md-input-container>
+      <md-input-container flex-gt-sm="33">
+        <label>Wicked factor</label>
+        <input ng-model="state.setup.ball.wickedf">
       </md-input-container>
     </div>
   </md-card-content>

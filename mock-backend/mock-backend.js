@@ -98,7 +98,28 @@ var state = {
     }
   },
   setup: {
-    ledcount: 144,
-    reverse: false
+    ledcount: 119,
+    reverse: false,
+    orientation: 'spiral',
+    colororder: 'RGB',
+
+    shape: 'curve',
+    curved: {
+      degree: 360
+    },
+    angled: {
+      count: 3,
+      missing: 0
+    },
+    zigzag: {
+      striplength: 13
+    },
+    spiral: {
+      turns: 19
+    },
+    ball: {
+      turns: 29,
+      ledscenter: 63
+    }
   }
 };
