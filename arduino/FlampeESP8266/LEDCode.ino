@@ -11,12 +11,9 @@ FASTLED_USING_NAMESPACE
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
-//CRGB leds[NUM_LEDS];
-//CRGB ledsShadow[NUM_LEDS];
 CRGB *leds;
 CRGB *ledsShadow;
 
-#define BRIGHTNESS          96
 #define FRAMES_PER_SECOND  120
 
 #define BRIGHTNESS_MIN  0
@@ -29,19 +26,12 @@ CRGB *ledsShadow;
 uint32_t led_actual_brightness_last = 0;
 int led_actual_brightness = 0;
 
-int led_currentPattern = 1;
-int led_patternBeforeMessage = 1;
+int led_currentPattern = 3;
+int led_patternBeforeMessage = 3;
 CRGB led_messageColor;
 
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { led_message, loop_led_fire, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm };
-
-void rainbow(){};
-void rainbowWithGlitter(){};
-void confetti(){};
-void sinelon(){};
-void juggle(){};
-void bpm(){};
+SimplePatternList gPatterns = { led_message, led_pattern_solid, led_pattern_gradient, loop_led_fire, bpm, juggle, led_pattern_rainbow};
 
 CRGBPalette16 gPal, userPalette, userPalette2, userPalette3;
 CRGBPalette16 pallettes[] = {userPalette,userPalette2,userPalette3,HeatColors_p,OceanColors_p,CloudColors_p,ForestColors_p,LavaColors_p,RainbowColors_p,PartyColors_p};
@@ -237,6 +227,8 @@ void setUserPalette() {
 
 void setAnimation(int index) {
   currentAnimation = index;
+  // 0 is message display
+  led_currentPattern = index + 1;
 }
 void setIdleAnimation(int index) {
   idleAnimation = index;
