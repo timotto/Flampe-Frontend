@@ -238,7 +238,7 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
     }
   }
   if (root.containsKey(JS_brightness)) {
-    setBrightness(root[JS_brightness], applyAndSave);
+    setBrightness(root[JS_brightness]);
   }
   if (root.containsKey("primary")) {
     copyJsonColor(root["primary"], &primaryColor);

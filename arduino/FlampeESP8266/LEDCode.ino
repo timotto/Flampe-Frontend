@@ -1,13 +1,12 @@
 #include "FastLED.h"
 
-void setBrightness(int value, bool updateHardware = true);
-
 FASTLED_USING_NAMESPACE
 
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001000)
 #warning "Requires FastLED 3.1 or later; check github for latest code."
 #endif
 
+#define MS_PER_BRIGHTNESS 10
 #define DATA_PIN    7
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
@@ -26,6 +25,9 @@ CRGB *ledsShadow;
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 #define flmax(a,b) (a>b?a:b)
 #define flmin(a,b) (a<b?a:b)
+
+uint32_t led_actual_brightness_last = 0;
+int led_actual_brightness = 0;
 
 int led_currentPattern = 1;
 int led_patternBeforeMessage = 1;
@@ -85,6 +87,7 @@ int dot = 0;
 uint32_t next = 0;
 
 void loop_led() {
+  _led_workBrightness();
   gPatterns[led_currentPattern]();
   led_show();
 }
@@ -124,6 +127,19 @@ inline void remap_leds() {
   }
 }
 
+void _led_workBrightness() {
+  if (brightness == led_actual_brightness) {return;}
+  uint32_t now = millis();
+  if (now - led_actual_brightness_last < MS_PER_BRIGHTNESS ) {return;}
+  if (brightness>led_actual_brightness) {
+    led_actual_brightness++;
+  } else {
+    led_actual_brightness--;
+  }
+  FastLED.setBrightness( led_actual_brightness );
+  led_actual_brightness_last = now;
+}
+
 void led_message(){
 
 };
@@ -149,13 +165,8 @@ void adjustBrightness(int direction) {
   setBrightness(brightness + direction);
 }
 
-void setBrightness(int value, bool updateHardware) {
+void setBrightness(int value) {
   brightness = flmin(BRIGHTNESS_MAX, flmax(BRIGHTNESS_MIN, value));
-  if (updateHardware) {
-    FastLED.setBrightness( brightness );
-    Serial.print("Brightness: ");
-    Serial.println(brightness);
-  }
 }
 
 int led_getBrightness() {
