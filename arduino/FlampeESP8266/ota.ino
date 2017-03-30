@@ -24,10 +24,10 @@ void loop_ota(){
   ArduinoOTA.onEnd([]() {
     led_showMessage(CRGB::Green);
     if(ArduinoOTA.getCommand() == U_SPIFFS) {
-      status_writeEnabled = true;
-      SPIFFS.begin();
       setBrightness(ota_brightnessBefore);
       led_hideMessage();
+      status_writeEnabled = true;
+      SPIFFS.begin();
       save_status();
       Serial.println("SPIFFS update complete - resuming");
     } else {

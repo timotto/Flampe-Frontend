@@ -52,6 +52,7 @@ void setup() {
 }
 
 void loop() {
+  loop_wifi();
   loop_mqtt();
   loop_websocket();
   loop_http();

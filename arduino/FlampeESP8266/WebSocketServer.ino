@@ -47,17 +47,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         Serial.println("Received push!");
         JsonObject& pushData = json["data"];
         apply_json_status(pushData);
-        status_cleanupJsonData(pushData, true, false);
-        // print back to buffer, which...
-        json.printTo(buffer, length+1);
-        websocketSend(buffer, json.measureLength());
-        if (mqtt_publish_state) {
-          mqttSend(buffer);
-        }
+        status_broadcastUpdate(json);
       }
       break;
   }
-
 }
 
 void websocketSend(const char* text, int length) {

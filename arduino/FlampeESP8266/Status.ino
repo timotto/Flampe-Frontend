@@ -152,7 +152,7 @@ void create_status_object(JsonObject& jsonStatus) {
   JsonObject& animation = jsonStatus.createNestedObject("animation");
   animation["currentAnimation"] = animationTextkeys[currentAnimation];
   animation["idleAnimation"] = animationTextkeys[idleAnimation];
-  animation["currentPalette"] = paletteTextkeys[currentPalette];
+  animation[JS_currentPalette] = paletteTextkeys[currentPalette];
   animation["idlePalette"] = paletteTextkeys[idlePalette];
   animation["idleBrightness"] = idleBrightness;
   animation["idleTimeout"] = idleTimeout;
@@ -237,8 +237,8 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
       }
     }
   }
-  if (root.containsKey("brightness")) {
-    setBrightness(root["brightness"], applyAndSave);
+  if (root.containsKey(JS_brightness)) {
+    setBrightness(root[JS_brightness], applyAndSave);
   }
   if (root.containsKey("primary")) {
     copyJsonColor(root["primary"], &primaryColor);
@@ -343,8 +343,8 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
     if (anim.containsKey("idleAnimation")){
       setIdleAnimation(indexInArray(animationTextkeys, animationTextkeysCount, anim["idleAnimation"]));
     }
-    if (anim.containsKey("currentPalette")){
-      setPalette(indexInArray(paletteTextkeys, paletteTextkeysCount, anim["currentPalette"]));
+    if (anim.containsKey(JS_currentPalette)){
+      setPalette(indexInArray(paletteTextkeys, paletteTextkeysCount, anim[JS_currentPalette]));
     }
     if (anim.containsKey("idlePalette")){
       setIdlePalette(indexInArray(paletteTextkeys, paletteTextkeysCount, anim["idlePalette"]));
@@ -354,4 +354,81 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
     save_status();
   }
 }
+
+#define MQTT_SEND_LONG_IF(topic, dataKey) if(data.containsKey(dataKey))mqtt_sendLong(topic, data[dataKey])
+
+void _status_sendIndividually(const char* topicPrefix, JsonObject& data) {
+  const int prefixLen = strlen(topicPrefix);
+  for(JsonObject::iterator it=data.begin(); it!=data.end(); ++it) {
+    const char* key = it->key;
+    const int keyLen = strlen(key);
+    
+    char subPrefix[prefixLen + keyLen + 2];
+    if (prefixLen == 0) {
+      strcpy(subPrefix, key);
+      subPrefix[keyLen] = 0;
+    } else {
+      strcpy(subPrefix, topicPrefix);
+      strcpy(subPrefix + prefixLen + 1, key);
+      subPrefix[prefixLen] = '/';
+      subPrefix[prefixLen + keyLen + 1] = 0;
+    }
+
+    if (it->value.is<JsonObject>()) {
+      JsonObject& sub = it->value;
+      _status_sendIndividually(subPrefix, sub);
+    } else {
+      const char* value = it->value;
+      mqtt_sendLong(subPrefix, (byte*)value, strlen(value));
+    }
+  }
+}
+
+/**
+ * Publish a status update via Web Socket, MQTT
+ * @param rootObject {"action":"push","data":{...}}
+ */
+void status_broadcastUpdate(JsonObject& rootObject) {
+  JsonObject& data = rootObject[JS_data];
+  // remove passwords AND static data, push is to be small
+  status_cleanupJsonData(data, true, true);
+  const unsigned int jsonLength = rootObject.measureLength();
+  char buffer[jsonLength+1];
+  buffer[jsonLength] = 0;
+  rootObject.printTo(buffer, jsonLength+1);
+
+  websocketSend(buffer, jsonLength);
+  if (mqtt_publish_state) {
+    mqttSend(buffer, jsonLength);
+    _status_sendIndividually("", data);
+  }
+}
+
+/**
+ * Publish a single value status update via Web Socket, MQTT
+ */
+void status_broadcastUpdate(const char* key, const char* text, unsigned int length) {
+  char textCopy[length+1];
+  textCopy[length]=0;
+  memcpy(textCopy, text, length);
+
+  DynamicJsonBuffer statusJsonBuffer;
+  JsonObject& jsonStatus = statusJsonBuffer.createObject();
+  jsonStatus["action"] = "push";
+  JsonObject& data = jsonStatus.createNestedObject("data");
+  data[key] = textCopy;
+
+  status_broadcastUpdate(jsonStatus);
+}
+
+/**
+ * Publish a single value status update via Web Socket, MQTT
+ */
+void status_broadcastUpdate(const char* key, int value) {
+  char textCopy[40];
+  sprintf(textCopy, "%d", value);
+
+  status_broadcastUpdate(key, textCopy, strlen(textCopy));
+}
+
 

@@ -15,6 +15,9 @@ const char *JS_orientationStrip = "strip";
 const char *JS_orientationZigzag = "zigzag";
 const char *JS_orientationSpiral = "spiral";
 const char *JS_reverse = "reverse";
+const char *JS_data = "data";
+const char *JS_brightness = "brightness";
+const char *JS_currentPalette = "currentPalette";
 
 const char *WS_action = "action";
 const char *WS_actionGet = "get";
