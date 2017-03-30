@@ -44,6 +44,7 @@ void setup() {
   setup_status();
   setup_wifi();
   setup_http();
+  setup_ota();
   setup_websocket();
   setup_mqtt();
   setup_led();
@@ -54,6 +55,7 @@ void loop() {
   loop_mqtt();
   loop_websocket();
   loop_http();
+  loop_ota();
   loop_led();
 }
 

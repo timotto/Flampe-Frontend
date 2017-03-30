@@ -2,6 +2,8 @@
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 #include "textkeys.h"
 
+bool status_writeEnabled = true;
+
 void apply_json_status(JsonObject& root, bool applyAndSave = true);
 
 void setup_status() {
@@ -75,13 +77,16 @@ void create_default_status() {
   strncpy(mqtt_password, "", sizeof(mqtt_password));
   strncpy(mqtt_intopic, "", sizeof(mqtt_intopic));
   strncpy(mqtt_outtopic, "", sizeof(mqtt_outtopic));
-  strncpy(mqtt_devicename, "flampe7", sizeof(mqtt_devicename));
+  strncpy(mqtt_devicename, "flampe", sizeof(mqtt_devicename));
   mqtt_listen_commands = false;
   mqtt_publish_state = false;
   mqtt_publish_gesture = false;
 }
 
 void save_status() {
+  if (!status_writeEnabled) {
+    return;
+  }
   Serial.println("saving status");
   File configFile = SPIFFS.open("/status.json", "w");
   if (!configFile) {
@@ -91,7 +96,6 @@ void save_status() {
   JsonObject& jsonStatus = statusJsonBuffer.createObject();
   create_status_object(jsonStatus);
   status_cleanupJsonData(jsonStatus, false, true);
-//  jsonStatus.printTo(Serial);
   jsonStatus.printTo(configFile);
   configFile.close();
   //end save
@@ -350,5 +354,4 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
     save_status();
   }
 }
-
 

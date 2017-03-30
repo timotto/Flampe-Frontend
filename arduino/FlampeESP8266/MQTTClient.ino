@@ -4,14 +4,9 @@
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
 
-long lastMsg = 0;
-char msg[50];
-int value = 0;
-
 void setup_mqtt() {
   mqtt_client.setServer(mqtt_server, mqtt_port);
   mqtt_client.setCallback(callback);
-  
 }
 
 void loop_mqtt() {

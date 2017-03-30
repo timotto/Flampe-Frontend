@@ -8,12 +8,9 @@ FASTLED_USING_NAMESPACE
 #warning "Requires FastLED 3.1 or later; check github for latest code."
 #endif
 
-#define DATA_PIN    12
-//#define CLK_PIN   4
+#define DATA_PIN    7
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-//#define NUM_LEDS    24
-//#define LED_STRIPS      3
 
 //CRGB leds[NUM_LEDS];
 //CRGB ledsShadow[NUM_LEDS];
@@ -43,12 +40,16 @@ CRGBPalette16 gPal, userPalette, userPalette2, userPalette3;
 CRGBPalette16 pallettes[] = {userPalette,userPalette2,userPalette3,HeatColors_p,OceanColors_p,CloudColors_p,ForestColors_p,LavaColors_p,RainbowColors_p,PartyColors_p};
 
 // set during setup_led() which runs after setup_status()
+int ledPin;
 int ledCount;
 int stripCount;
 int ledOrientation;
 int ledsPerStrip;
 
 void setup_led() {
+  ledPin = setup_ledPin;
+  if (ledPin < 1) ledPin = 12;
+  
   // set setup values read by setup_status()
   ledOrientation = setup_orientation;
   if (stripCount < 1) { stripCount = 1; }
@@ -64,7 +65,7 @@ void setup_led() {
   
   delay(1000); // 1 second delay for recovery
   
-  // tell FastLED about the LED strip configuration
+  // TODO how to configure pin via web ui!?
   FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(ledsShadow, ledCount).setCorrection(TypicalLEDStrip);
 
   setUserPalette();

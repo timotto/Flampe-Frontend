@@ -9,7 +9,10 @@ void setup_wifi() {
   WiFi.onEvent(WiFiEvent);
   reconfigureWifi();
 
-  if(MDNS.begin("flampe-7")) {
+  char tmp[15];
+  sprintf(tmp, "flampe-%06x", ESP.getChipId());
+    
+  if(MDNS.begin(tmp)) {
     MDNS.addService("http", "tcp", 80);
     Serial.println("MDNS responder started");
   }

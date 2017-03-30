@@ -1,5 +1,4 @@
 #include <ESP8266mDNS.h>
-#include <ArduinoOTA.h>
 #include <ESP8266WebServer.h>
 #include <FS.h>
 #include "WifiClientPrint.h"
@@ -7,7 +6,6 @@
 ESP8266WebServer server(80);
 
 void setup_http() {
-  ArduinoOTA.begin();
 //  server.on("/", [](){
 //    if(!server.authenticate(www_username, www_password))
 //      return server.requestAuthentication();
@@ -28,7 +26,6 @@ void setup_http() {
 }
 
 void loop_http() {
-  ArduinoOTA.handle();
   server.handleClient();
 }
 
