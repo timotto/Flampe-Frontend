@@ -52,6 +52,7 @@ int ledCount;
 int stripCount;
 int ledOrientation;
 int ledsPerStrip;
+bool ledsReverse;
 
 void setup_led() {
   ledPin = setup_ledPin;
@@ -64,6 +65,7 @@ void setup_led() {
   if (ledCount < 1) { ledCount = 1; }
   stripCount = setup_stripCount;
   if (stripCount < 1) { stripCount = 1; }
+  ledsReverse = setup_ledReverse;
   // calculate constants based on that
   ledsPerStrip = ledCount /  stripCount;
   // initialize ram stuff
@@ -124,6 +126,16 @@ inline void remap_leds() {
       // spiral
       memcpy(ledsShadow, leds, ledCount * sizeof(CRGB));
       break;
+  }
+  if (ledsReverse) {
+    CRGB tmp;
+    int j;
+    for(int i=0;i<ledCount/2;i++) {
+      j = ledCount - i - 1;
+      tmp = ledsShadow[i];
+      ledsShadow[i] = ledsShadow[j];
+      ledsShadow[j] = tmp;
+    }
   }
 }
 

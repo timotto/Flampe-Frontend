@@ -1,5 +1,3 @@
-bool gReverseDirection = false;
-
 // Fire2012 with programmable Color Palette
 //
 // This code is the same fire simulation as the original "Fire2012",
@@ -127,13 +125,7 @@ void Fire2012WithPalette()
       // for best results with color palettes.
       byte colorindex = scale8( heat[j], 240);
       CRGB color = ColorFromPalette( gPal, colorindex);
-      int pixelnumber;
-      if( gReverseDirection ) {
-        pixelnumber = (ledCount-1) - j;
-      } else {
-        pixelnumber = j;
-      }
-      leds[pixelnumber] = color;
+      leds[j] = color;
     }
 }
 
