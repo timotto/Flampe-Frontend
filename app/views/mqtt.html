@@ -30,47 +30,34 @@
         <input ng-model="state.mqtt.password">
       </md-input-container>
     </div>
+    <div layout="column">
+      <md-input-container>
+        <label>{{'DEVICE_NAME'|translate}}</label>
+        <input ng-model="state.mqtt.name">
+      </md-input-container>
+      <md-checkbox name="listenCommands" ng-model="state.mqtt.listen.commands">
+        {{'MQTT_MSG_LISTEN'|translate}}
+      </md-checkbox>
+      <md-input-container>
+        <label>{{'MQTT_MSG_INTOPIC'|translate}}</label>
+        <input ng-model="state.mqtt.intopic">
+      </md-input-container>
+
+      <md-checkbox name="publishState" ng-model="state.mqtt.publish.state">
+        {{'MQTT_MSG_PUB_STATE'|translate}}
+      </md-checkbox>
+      <md-checkbox name="publishGesture" ng-model="state.mqtt.publish.gesture">
+        {{'MQTT_MSG_PUB_GESTURE'|translate}}
+      </md-checkbox>
+
+      <md-input-container>
+        <label>{{'MQTT_MSG_OUTTOPIC'|translate}}</label>
+        <input ng-model="state.mqtt.outtopic">
+      </md-input-container>
+    </div>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
     <md-button ng-click="save('connection')">{{'SAVE'|translate}}</md-button>
   </md-card-actions>
 </md-card>
-<md-card>
-  <md-card-title>
-    <md-card-title-text>
-      <span class="md-headline">{{'MQTT_MSG_TITLE'|translate}}</span>
-      <span class="md-subhead">{{'MQTT_MSG_TEXT'|translate}}</span>
-    </md-card-title-text>
-    <md-card-title-media>
-      <md-icon md-svg-icon="linear_scale" class="md-media-sm card-media"></md-icon>
-    </md-card-title-media>
-  </md-card-title>
-  <md-card-content layout="column">
-    <md-input-container>
-      <label>{{'DEVICE_NAME'|translate}}</label>
-      <input ng-model="state.mqtt.name">
-    </md-input-container>
-    <md-checkbox name="listenCommands" ng-model="state.mqtt.listen.commands">
-      {{'MQTT_MSG_LISTEN'|translate}}
-    </md-checkbox>
-    <md-input-container>
-      <label>{{'MQTT_MSG_INTOPIC'|translate}}</label>
-      <input ng-model="state.mqtt.intopic">
-    </md-input-container>
 
-    <md-checkbox name="publishState" ng-model="state.mqtt.publish.state">
-      {{'MQTT_MSG_PUB_STATE'|translate}}
-    </md-checkbox>
-    <md-checkbox name="publishGesture" ng-model="state.mqtt.publish.gesture">
-      {{'MQTT_MSG_PUB_GESTURE'|translate}}
-    </md-checkbox>
-
-    <md-input-container>
-      <label>{{'MQTT_MSG_OUTTOPIC'|translate}}</label>
-      <input ng-model="state.mqtt.outtopic">
-    </md-input-container>
-  </md-card-content>
-  <md-card-actions layout="row" layout-align="end center">
-    <md-button ng-click="save('messages')">{{'SAVE'|translate}}</md-button>
-  </md-card-actions>
-</md-card>
