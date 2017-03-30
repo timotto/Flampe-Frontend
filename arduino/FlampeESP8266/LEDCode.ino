@@ -27,8 +27,13 @@ CRGB *ledsShadow;
 #define flmax(a,b) (a>b?a:b)
 #define flmin(a,b) (a<b?a:b)
 
+int led_currentPattern = 1;
+int led_patternBeforeMessage = 1;
+CRGB led_messageColor;
+
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { loop_led_fire, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm };
+SimplePatternList gPatterns = { led_message, loop_led_fire, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm };
+
 void rainbow(){};
 void rainbowWithGlitter(){};
 void confetti(){};
@@ -80,16 +85,11 @@ int dot = 0;
 uint32_t next = 0;
 
 void loop_led() {
-  loop_led_fire();
-//  uint32_t now = millis();
-//  if (now >= next) {
-//    leds[dot] = CRGB::White;
-//    FastLED.show();
-//    // clear this led for the next time around the loop
-//    leds[dot] = CRGB::Black;
-//    dot = (dot + 1) % NUM_LEDS;
-//    next = now + 10;
-//  }
+  gPatterns[led_currentPattern]();
+  led_show();
+}
+
+inline void led_show() {
   remap_leds();
   FastLED.show();
 }
@@ -124,6 +124,27 @@ inline void remap_leds() {
   }
 }
 
+void led_message(){
+
+};
+
+void led_showMessage(CRGB color) {
+  if (led_patternBeforeMessage != 0) {
+    led_patternBeforeMessage = led_currentPattern;
+  }
+  led_messageColor = color;
+  led_currentPattern = 0;
+  int i;
+  for(i=0;i<ledCount;i++) {
+    leds[i] = color;
+  }
+  led_show();
+}
+
+void led_hideMessage() {
+  led_currentPattern = led_patternBeforeMessage;
+}
+
 void adjustBrightness(int direction) {
   setBrightness(brightness + direction);
 }
@@ -135,6 +156,10 @@ void setBrightness(int value, bool updateHardware) {
     Serial.print("Brightness: ");
     Serial.println(brightness);
   }
+}
+
+int led_getBrightness() {
+  return brightness;
 }
 
 void adjustPalette(int direction) {
