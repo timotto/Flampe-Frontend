@@ -7,7 +7,7 @@ bool status_writeEnabled = true;
 void apply_json_status(JsonObject& root, bool applyAndSave = true);
 
 void setup_status() {
-  bool readStatusObject = false;
+  create_default_status();
   if (SPIFFS.begin()) {
     Serial.println("mounted file system");
     if (SPIFFS.exists("/status.json")) {
@@ -28,7 +28,6 @@ void setup_status() {
         if (json.success()) {
           // don't update hardware, reconnect mqtt. this step happens before setup of the other systems
           apply_json_status(json, false);
-          readStatusObject = true;
           Serial.println("\nparsed json");
         } else {
           Serial.println("failed to load json config");
@@ -41,10 +40,6 @@ void setup_status() {
     }
   } else {
     Serial.println("failed to mount FS");
-  }
-  //end read
-  if(!readStatusObject) {
-    create_default_status();
   }
 }
 
