@@ -22,15 +22,15 @@ void led_pattern_solid(){
   if(!led_pattern_thisTime) { return; }
   
   for(int i=0;i<ledCount;i++) {
-    leds[i] = primaryColor;
+    leds[i] = led_actual_primaryColor;
   }
 }
 
 void led_pattern_gradient(){
   if(!led_pattern_thisTime) { return; }
 
-  CHSV primaryHsv = rgb2hsv_approximate(primaryColor);
-  CHSV accentHsv = rgb2hsv_approximate(accentColor);
+  CHSV primaryHsv = rgb2hsv_approximate(led_actual_primaryColor);
+  CHSV accentHsv = rgb2hsv_approximate(led_actual_accentColor);
   fill_gradient(leds, ledCount, primaryHsv, accentHsv);
 }
 

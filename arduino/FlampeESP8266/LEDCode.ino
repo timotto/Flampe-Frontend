@@ -7,6 +7,7 @@ FASTLED_USING_NAMESPACE
 #endif
 
 #define MS_PER_BRIGHTNESS 10
+#define MS_PER_COLOR 5
 #define DATA_PIN    7
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
@@ -23,8 +24,13 @@ CRGB *ledsShadow;
 #define flmax(a,b) (a>b?a:b)
 #define flmin(a,b) (a<b?a:b)
 
-uint32_t led_actual_brightness_last = 0;
+// actual values used with FastLED
 int led_actual_brightness = 0;
+CRGB led_actual_primaryColor = CRGB::Black;
+CRGB led_actual_accentColor = CRGB::Black;
+// time stamps when fading brightness, color
+uint32_t led_actual_brightness_last = 0;
+uint32_t led_actual_color_last = 0;
 
 int led_currentPattern = 3;
 int led_patternBeforeMessage = 3;
@@ -65,7 +71,7 @@ void setup_led() {
   delay(1000); // 1 second delay for recovery
   
   // TODO how to configure pin via web ui!?
-  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(ledsShadow, ledCount).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(ledsShadow, ledCount).setCorrection(TypicalPixelString);
 
   setUserPalette();
   setBrightness(brightness);
@@ -80,6 +86,7 @@ uint32_t next = 0;
 
 void loop_led() {
   _led_workBrightness();
+  _led_workColors();
   gPatterns[led_currentPattern]();
   led_show();
 }
@@ -140,6 +147,32 @@ void _led_workBrightness() {
   }
   FastLED.setBrightness( led_actual_brightness );
   led_actual_brightness_last = now;
+}
+
+void _led_workColors() {
+  if (_led_isSameColor(led_actual_primaryColor, primaryColor) &&
+      _led_isSameColor(led_actual_accentColor, accentColor)) {return;}
+      
+  uint32_t now = millis();
+  if (now - led_actual_color_last < MS_PER_COLOR ) {return;}
+  led_actual_color_last = now;
+
+  _led_adjustColor(&led_actual_primaryColor, &primaryColor);
+  _led_adjustColor(&led_actual_accentColor, &accentColor);
+  setUserPalette();
+}
+
+bool _led_isSameColor(CRGB a, CRGB b) {
+  return a.red==b.red && a.green == b.green && a.blue == b.blue;
+}
+
+void _led_adjustColor(CRGB* adjust, CRGB* wanted) {
+  if (adjust->red < wanted->red) adjust->red++;
+  else if (adjust->red > wanted->red) adjust->red--;
+  if (adjust->green < wanted->green) adjust->green++;
+  else if (adjust->green > wanted->green) adjust->green--;
+  if (adjust->blue < wanted->blue) adjust->blue++;
+  else if (adjust->blue > wanted->blue) adjust->blue--;
 }
 
 void led_message(){
@@ -214,9 +247,9 @@ void setAccentColor(uint8_t red, uint8_t green, uint8_t blue) {
 }
 
 void setUserPalette() {
-  userPalette = CRGBPalette16( CRGB::Black, primaryColor, accentColor);
-  userPalette2 = CRGBPalette16( CRGB::Black, primaryColor, accentColor, CRGB::White);
-  userPalette3 = CRGBPalette16( accentColor, CRGB::Black, CRGB::White,  primaryColor);
+  userPalette = CRGBPalette16( CRGB::Black, led_actual_primaryColor, led_actual_accentColor);
+  userPalette2 = CRGBPalette16( CRGB::Black, led_actual_primaryColor, led_actual_accentColor, CRGB::White);
+  userPalette3 = CRGBPalette16( led_actual_accentColor, CRGB::Black, CRGB::White,  led_actual_primaryColor);
   pallettes[0] = userPalette;
   pallettes[1] = userPalette2;
   pallettes[2] = userPalette3;
