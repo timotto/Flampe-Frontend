@@ -34,33 +34,11 @@ void setup_led_fire() {
 
 uint32_t nextLedFireTime = 0;
 void loop_led_fire() {
-  loop_ui();
   uint32_t now = millis();
   if (now < nextLedFireTime) return;
   nextLedFireTime = now + (1000 / FRAMES_PER_SECOND);
   Fire2012WithPalette(); // run simulation frame, using palette colors
 }
-
-void loop_ui() {
-  while (Serial.available()) {
-    char in = Serial.read();
-    switch(in) {
-      case '-':
-        adjustPalette(-1);
-        break;
-      case '+':
-        adjustPalette(+1);
-        break;
-      case 'b':
-        adjustBrightness(-16);
-        break;
-      case 'B':
-        adjustBrightness(16);
-        break;
-    }
-  }
-}
-
 
 // Fire2012 by Mark Kriegsman, July 2012
 // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
