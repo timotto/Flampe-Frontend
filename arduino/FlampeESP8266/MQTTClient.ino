@@ -11,33 +11,36 @@ void setup_mqtt() {
 }
 
 void loop_mqtt() {
-   if (!mqtt_client.connected()) {
-    mqtt_reconnect();
-  } else {
+  if (strlen(mqtt_server) == 0 || mqtt_port < 1) {
+    return;
+  }
+  if(mqtt_isConnectedOrReconnect()) {
     mqtt_client.loop();
   }
 }
 
 int reconnectStep = 0;
 uint32_t reconnectStepTime = 0;
-void mqtt_reconnect() {
-  if (strlen(mqtt_server) == 0 || mqtt_port < 1) {
-    return;
-  }
+
+bool mqtt_isConnectedOrReconnect() {
   switch(reconnectStep) {
     case 0:
       // entry & exit case
       if (mqtt_client.connected()) {
-        return;
+        return true;
       }
+      reconnectStepTime = millis() + 2000;
       reconnectStep = 1;
       break;
     case 1:
       {
+        if (millis() < reconnectStepTime) {
+          break;
+        }
         // attempt connection
         Serial.print("Attempting MQTT connection...");
         // Attempt to connect
-        if (mqtt_client.connect(mqtt_devicename)) {
+        if (mqtt_client.connect(FLAMPE_ID)) {
           Serial.println("connected");
           // Once connected, publish an announcement...
           mqttSend("{\"status\":\"online\"}");
@@ -64,14 +67,14 @@ void mqtt_reconnect() {
       }
       break;
   }
+  return false;
 }
 
 void mqttResubscribe() {
   if(strnlen(mqtt_intopic, sizeof(mqtt_intopic)) > 0) {
     const int intopicLen = strlen(mqtt_intopic);
     char subtopic[intopicLen+3];
-    strncpy(subtopic, mqtt_intopic, sizeof(subtopic));
-    strcpy(subtopic+intopicLen, "/#");
+    sprintf(subtopic, "%s/#", mqtt_intopic);
     mqtt_client.subscribe(mqtt_intopic);
     mqtt_client.subscribe(subtopic);
   }
@@ -98,10 +101,7 @@ void mqtt_sendLong(const char* topic, byte* payload, unsigned int length) {
   const int topicLen = strlen(topic);
   // both path components plus a slash plus 0
   char subtopic[outtopicLen+topicLen+2];
-  strcpy(subtopic, mqtt_outtopic);
-  strcpy(subtopic+outtopicLen+1, topic);
-  subtopic[outtopicLen] = '/';
-  subtopic[outtopicLen+topicLen+1] = 0;
+  sprintf(subtopic, "%s/%s", mqtt_outtopic, topic);
   mqtt_client.publish(subtopic, payload, length);
 }
 

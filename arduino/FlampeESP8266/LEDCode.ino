@@ -228,8 +228,6 @@ void setPalette(int index) {
   //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::White);
   currentPalette = flmin(ARRAY_SIZE( pallettes), flmax(0, index));
   gPal = pallettes[currentPalette];
-  Serial.print("Palette #: ");
-  Serial.println(currentPalette);
 }
 
 void setPrimaryColor(uint8_t red, uint8_t green, uint8_t blue) {

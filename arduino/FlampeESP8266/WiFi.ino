@@ -5,6 +5,9 @@
 
 int wifiConnectionFails = 0;
 
+int wifi_apClientsConnected = 0;
+bool wifi_apClientsConnectedChanged = false;
+
 void setup_wifi() {
   WiFi.onEvent(WiFiEvent);
   reconfigureWifi();
@@ -18,12 +21,23 @@ void setup_wifi() {
   }
 }
 
+void loop_wifi() {
+  if (wifi_apClientsConnectedChanged) {
+    wifi_apClientsConnectedChanged = false;
+    // TODO send status update push
+  }
+}
+
 void WiFiEvent(WiFiEvent_t event) {
   
   switch(event) {
     case WIFI_EVENT_SOFTAPMODE_STACONNECTED:
+      wifi_apClientsConnected++;
+      wifi_apClientsConnectedChanged = true;
       break;
     case WIFI_EVENT_SOFTAPMODE_STADISCONNECTED:
+      wifi_apClientsConnected--;
+      wifi_apClientsConnectedChanged = true;
       break;
     case WIFI_EVENT_SOFTAPMODE_PROBEREQRECVED:
       break;

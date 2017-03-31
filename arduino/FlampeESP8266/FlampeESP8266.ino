@@ -4,6 +4,8 @@
 // because auf color types
 #include <FastLED.h>
 
+char FLAMPE_ID[15];
+
 const char* www_username = "admin";
 const char* www_password = "esp8266";
 
@@ -39,6 +41,8 @@ char hotspot_ssid[40];
 char hotspot_password[40];
 
 void setup() {
+  sprintf(FLAMPE_ID, "flampe-%06x", ESP.getChipId());
+
   Serial.begin(115200);
   SPIFFS.begin();
   setup_status();
