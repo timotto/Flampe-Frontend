@@ -52,6 +52,7 @@ void setup() {
   setup_websocket();
   setup_mqtt();
   setup_led();
+  setup_sensor();
   Serial.println("Started!");
 }
 
@@ -62,6 +63,7 @@ void loop() {
   loop_http();
   loop_ota();
   loop_led();
+  loop_sensor();
 }
 
 
