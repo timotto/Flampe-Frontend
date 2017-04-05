@@ -15,9 +15,20 @@ The web interface allows to configure an MQTT server for status update and contr
 The hardware consists of an ESP8266 chip connected to an LED strip. Optionally an APDS-9960 gesture and light sensor may 
 be connected via I2C.
 
+## Arduino
+
+At least the ArduinoOTA library #889775c from Aug 27 2016 has to be used, the one included in the ESP8266 package 2.3.0 
+is just a few days too old. 
+
+Please use [my fork](https://github.com/timotto/SparkFun_APDS-9960_Sensor_Arduino_Library) of 
+[jonn26's fork](https://github.com/jonn26/SparkFun_APDS-9960_Sensor_Arduino_Library) of the 
+[APDS-9960](https://github.com/sparkfun/SparkFun_APDS-9960_Sensor_Arduino_Library) library because my fork has an 
+asynchronous interface, allowing simultaneous LED and gesture operation. (This was the last missing piece in the old 
+BTLE based project btw.)
+
 ## Frontend 
 
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
+This front end is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
 version 0.16.0.
 
 ### Build & development

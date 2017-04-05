@@ -13,7 +13,7 @@ void setup_http() {
 //  });
 
   // serveStatis is picky: /w wouldn't work, had to be /w/ as directory
-  server.serveStatic("/",   SPIFFS, "/w/"  ,"max-age=86400"); 
+  server.serveStatic("/",   SPIFFS, "/w/"  ,"max-age=604800"); 
 
   server.onNotFound([](){
       server.send(404, "text/plain", "FileNotFound");

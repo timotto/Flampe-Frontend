@@ -1,4 +1,6 @@
+#include <Ticker.h>
 #include "FastLED.h"
+#include "textkeys.h"
 
 FASTLED_USING_NAMESPACE
 
@@ -12,6 +14,7 @@ FASTLED_USING_NAMESPACE
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
+Ticker ledTicker;
 CRGB *leds;
 CRGB *ledsShadow;
 
@@ -44,6 +47,7 @@ CRGBPalette16 pallettes[] = {userPalette,userPalette2,userPalette3,HeatColors_p,
 
 // set during setup_led() which runs after setup_status()
 int ledPin;
+
 int ledCount;
 int stripCount;
 int ledOrientation;
@@ -72,6 +76,7 @@ void setup_led() {
   
   // TODO how to configure pin via web ui!?
   FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(ledsShadow, ledCount).setCorrection(TypicalPixelString);
+//  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(ledsShadow, ledCount).setCorrection(TypicalLEDStrip);
 
   setUserPalette();
   setBrightness(brightness);
@@ -79,12 +84,14 @@ void setup_led() {
   setAnimation(currentAnimation);
   
   setup_led_fire();
+
+  ledTicker.attach_ms(10, tick_led);
 }
 
 int dot = 0;
 uint32_t next = 0;
 
-void loop_led() {
+void tick_led() {
   _led_workBrightness();
   _led_workColors();
   gPatterns[led_currentPattern]();
@@ -198,6 +205,12 @@ void led_hideMessage() {
 
 void adjustBrightness(int direction) {
   setBrightness(brightness + direction);
+  DynamicJsonBuffer statusJsonBuffer;
+  JsonObject& jsonStatus = statusJsonBuffer.createObject();
+  jsonStatus["action"] = "push";
+  JsonObject& data = jsonStatus.createNestedObject("data");
+  data[JS_brightness] = brightness;
+  status_broadcastUpdate(jsonStatus);
 }
 
 void setBrightness(int value) {
@@ -210,6 +223,13 @@ int led_getBrightness() {
 
 void adjustPalette(int direction) {
   setPalette(currentPalette + direction);
+  DynamicJsonBuffer statusJsonBuffer;
+  JsonObject& jsonStatus = statusJsonBuffer.createObject();
+  jsonStatus["action"] = "push";
+  JsonObject& data = jsonStatus.createNestedObject("data");
+  JsonObject& anim = jsonStatus.createNestedObject("animation");
+  anim[JS_currentPalette] = paletteTextkeys[currentPalette];
+  status_broadcastUpdate(jsonStatus);
 }
 
 void setIdlePalette(int index) {
@@ -226,7 +246,7 @@ void setPalette(int index) {
   
   // Third, here's a simpler, three-step gradient, from black to red to white
   //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::White);
-  currentPalette = flmin(ARRAY_SIZE( pallettes), flmax(0, index));
+  currentPalette = (index + ARRAY_SIZE( pallettes)) % ARRAY_SIZE( pallettes);
   gPal = pallettes[currentPalette];
 }
 
@@ -256,11 +276,27 @@ void setUserPalette() {
   }
 }
 
+void adjustAnimation(int direction) {
+  // reduced by 1 for the message animation
+  const int len = ARRAY_SIZE( gPatterns) - 1;
+  
+  int nindex = (len + direction + currentAnimation) % len;
+  setAnimation(nindex);
+  DynamicJsonBuffer statusJsonBuffer;
+  JsonObject& jsonStatus = statusJsonBuffer.createObject();
+  jsonStatus["action"] = "push";
+  JsonObject& data = jsonStatus.createNestedObject("data");
+  JsonObject& anim = jsonStatus.createNestedObject("animation");
+  anim[JS_currentAnimation] = animationTextkeys[currentAnimation];
+  status_broadcastUpdate(jsonStatus);
+}
+
 void setAnimation(int index) {
   currentAnimation = index;
   // 0 is message display
   led_currentPattern = index + 1;
 }
+
 void setIdleAnimation(int index) {
   idleAnimation = index;
 }

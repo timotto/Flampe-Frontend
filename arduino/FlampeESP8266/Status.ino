@@ -2,6 +2,8 @@
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 #include "textkeys.h"
 
+void sensor_toggleOnOff(int directionForSignature);
+
 bool status_writeEnabled = true;
 
 void apply_json_status(JsonObject& root, bool applyAndSave = true);
@@ -38,6 +40,7 @@ void setup_status() {
     } else {
       Serial.println("Config file does not exist");
     }
+    save_status();
   } else {
     Serial.println("failed to mount FS");
   }
@@ -60,7 +63,14 @@ void create_default_status() {
   idlePalette = 0;
   idleBrightness = 0;
   idleTimeout = 0;
-  
+
+  sensor_enabled_proximity = true;
+  sensor_enabled_onoffgesture = false;
+  sensor_gesture_x = &sensor_toggleOnOff;
+  sensor_gesture_y = &sensor_toggleOnOff;
+  sensor_gesture_x_direction = -1;
+  sensor_gesture_y_direction = -1;
+
   strncpy(hotspot_ssid, "Flampe", sizeof(hotspot_ssid));
   strncpy(hotspot_password, "password", sizeof(hotspot_password));
   strncpy(wifi_ssid, "", sizeof(hotspot_ssid));
@@ -113,7 +123,7 @@ void create_status_object(JsonObject& jsonStatus) {
     case 1: setup[JS_orientation] = JS_orientationZigzag; break;
     case 2: setup[JS_orientation] = JS_orientationSpiral; break;
   }
-  
+
   jsonStatus["brightness"] = brightness;
   
   JsonObject& primary = jsonStatus.createNestedObject("primary");
@@ -121,6 +131,13 @@ void create_status_object(JsonObject& jsonStatus) {
 
   JsonObject& accent = jsonStatus.createNestedObject("accent");
   dump_json_color(accent, &accentColor);
+
+  JsonObject& sensor = jsonStatus.createNestedObject("sensor");
+  sensor["brightness"] = sensor_enabled_proximity;
+  sensor["xfunc"] = _status_fillGestureFunction(sensor_gesture_x);
+  sensor["yfunc"] = _status_fillGestureFunction(sensor_gesture_y);
+  sensor["xdir"] = sensor_gesture_x_direction;
+  sensor["ydir"] = sensor_gesture_y_direction;
 
   JsonObject& wifi = jsonStatus.createNestedObject("wifi");
   wifi["ssid"] = wifi_ssid;
@@ -160,6 +177,19 @@ void create_status_object(JsonObject& jsonStatus) {
   for(int i=0;i<ARRAY_SIZE(paletteTextkeys);i++) {
     palettes.createNestedObject(paletteTextkeys[i]);
   }
+}
+
+const char* _status_fillGestureFunction(void (*f)(int)) {
+  if (f == &adjustAnimation) {
+    return JS_gestureFunctionAnimation;
+  }
+  if (f == &adjustPalette) {
+    return JS_gestureFunctionPalette;
+  }
+  if (f == &sensor_toggleOnOff) {
+    return JS_gestureFunctionOnOff;
+  }
+  return JS_gestureFunctionNone;
 }
 
 void MASK_PASSWORD_FIELD(JsonObject& a, const char* b) {
@@ -324,7 +354,7 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
       }
     }
   }
-  if (root.containsKey("animation")) {
+  if (root.containsKey(JS_animation)) {
     JsonObject& anim = root.get("animation");
     if (anim.containsKey("idleTimeout")){
       idleTimeout = anim["idleTimeout"];
@@ -332,8 +362,8 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
     if (anim.containsKey("idleBrightness")){
       idleBrightness = anim["idleBrightness"];
     }
-    if (anim.containsKey("currentAnimation")){
-      setAnimation(indexInArray(animationTextkeys, animationTextkeysCount, anim["currentAnimation"]));
+    if (anim.containsKey(JS_currentAnimation)){
+      setAnimation(indexInArray(animationTextkeys, animationTextkeysCount, anim[JS_currentAnimation]));
     }
     if (anim.containsKey("idleAnimation")){
       setIdleAnimation(indexInArray(animationTextkeys, animationTextkeysCount, anim["idleAnimation"]));
@@ -345,10 +375,41 @@ void apply_json_status(JsonObject& root, bool applyAndSave) {
       setIdlePalette(indexInArray(paletteTextkeys, paletteTextkeysCount, anim["idlePalette"]));
     }
   }
+  if (root.containsKey(JS_gesture)) {
+    JsonObject& gesture = root.get(JS_gesture);
+    sensor_enabled_proximity = (gesture[JS_brightness] != 0 && strcmp(gesture[JS_brightness], "true") == 0);
+    if (gesture.containsKey(JS_xfunc)) sensor_gesture_x = _status_parseGestureFunction(gesture[JS_xfunc]);
+    if (gesture.containsKey(JS_yfunc)) sensor_gesture_y = _status_parseGestureFunction(gesture[JS_yfunc]);
+    if (gesture.containsKey(JS_xdir)) sensor_gesture_x_direction = gesture[JS_xdir];
+    if (gesture.containsKey(JS_ydir)) sensor_gesture_y_direction = gesture[JS_ydir];
+  }
   if (applyAndSave) {
     save_status();
   }
 }
+
+t_sensor_gesture_function _status_parseGestureFunction(const char* text) {
+  if (text == 0) {
+    Serial.println("gesture text is null");
+    return 0;
+  }
+  
+  if (strcmp(JS_gestureFunctionPalette, text) == 0) {
+    Serial.printf("found %s\n", text);
+    return &adjustPalette;
+  }
+  if (strcmp(JS_gestureFunctionAnimation, text) == 0) {
+    Serial.printf("found %s\n", text);
+    return &adjustAnimation;
+  }
+  if (strcmp(JS_gestureFunctionOnOff, text) == 0) {
+    Serial.printf("found %s\n", text);
+    return &sensor_toggleOnOff;
+  }
+  Serial.printf("gesture text is unknown [%s]\n", text);
+  return 0;
+}
+
 
 #define MQTT_SEND_LONG_IF(topic, dataKey) if(data.containsKey(dataKey))mqtt_sendLong(topic, data[dataKey])
 

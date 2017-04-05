@@ -40,6 +40,15 @@ char wifi_password[40];
 char hotspot_ssid[40];
 char hotspot_password[40];
 
+typedef void (*t_sensor_gesture_function)(int);
+
+bool sensor_enabled_proximity;
+bool sensor_enabled_onoffgesture;
+t_sensor_gesture_function sensor_gesture_x;
+t_sensor_gesture_function sensor_gesture_y;
+int sensor_gesture_x_direction;
+int sensor_gesture_y_direction;
+
 void setup() {
   sprintf(FLAMPE_ID, "flampe-%06x", ESP.getChipId());
 
@@ -62,8 +71,8 @@ void loop() {
   loop_websocket();
   loop_http();
   loop_ota();
-  loop_led();
   loop_sensor();
+  // there's no loop_led() because setup_led() attaches a 10ms Ticker
 }
 
 
