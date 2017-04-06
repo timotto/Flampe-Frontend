@@ -9,13 +9,11 @@ int wifi_apClientsConnected = 0;
 bool wifi_apClientsConnectedChanged = false;
 
 void setup_wifi() {
+  WiFi.hostname(FLAMPE_ID);
   WiFi.onEvent(WiFiEvent);
   reconfigureWifi();
 
-  char tmp[15];
-  sprintf(tmp, "flampe-%06x", ESP.getChipId());
-    
-  if(MDNS.begin(tmp)) {
+  if(MDNS.begin(FLAMPE_ID)) {
     MDNS.addService("http", "tcp", 80);
     Serial.println("MDNS responder started");
   }
@@ -184,5 +182,9 @@ void reconfigureWifi() {
     Serial.print("AP IP address: ");
     Serial.println(myIP);
   }
+}
+
+bool wifi_isApClient(IPAddress& ip) {
+  return false;
 }
 
