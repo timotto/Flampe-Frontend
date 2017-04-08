@@ -6,6 +6,12 @@ const char *paletteTextkeys[] = {"PALETTE_BASE","PALETTE_BASE2","PALETTE_BASE3",
 const int animationTextkeysCount = 6;
 const int paletteTextkeysCount = 10;
 
+const char *JS_status = "status";
+const char *JS_connected = "connected";
+const char *JS_connection = "connection";
+const char *JS_wifi = "wifi";
+const char *JS_sta = "sta";
+const char *JS_ap = "ap";
 const char *JS_setup = "setup";
 const char *JS_ledpin = "ledpin";
 const char *JS_ledcount = "ledcount";
@@ -30,9 +36,10 @@ const char *JS_gestureFunctionPalette = "GESTURE_PALETTE";
 const char *JS_gestureFunctionAnimation = "GESTURE_ANIMATION";
 const char *JS_gestureFunctionOnOff = "GESTURE_ONOFF";
 
-const char *WS_action = "action";
+const char *JS_action = "action";
+const char *JS_push = "push";
+
 const char *WS_actionGet = "get";
-const char *WS_actionPush = "push";
 const char *WS_actionPing = "ping";
 const char *WS_actionPong = "pong";
 

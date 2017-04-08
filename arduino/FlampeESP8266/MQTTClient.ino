@@ -186,7 +186,7 @@ void mqtt_onPlainTopic(byte* payload, unsigned int length) {
     Serial.println("no data in JSON - ignored");
     return;
   }
-  if (strncmp(WS_actionPush,json[WS_action],strlen(WS_actionPush)) == 0) {
+  if (strcmp(JS_action,json[JS_action]) == 0) {
     Serial.println("Received push!");
     JsonObject& pushData = json[JS_data];
     apply_json_status(pushData, true);

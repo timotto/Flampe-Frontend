@@ -8,6 +8,9 @@ int wifiConnectionFails = 0;
 int wifi_apClientsConnected = 0;
 bool wifi_apClientsConnectedChanged = false;
 
+bool wifi_enableSta = false;
+bool wifi_enableAp = false;
+
 void setup_wifi() {
   WiFi.hostname(FLAMPE_ID);
   WiFi.onEvent(WiFiEvent);
@@ -93,10 +96,10 @@ void hotspotReconnect(){
 }
 
 void reconfigureWifi() {
-  bool enableSta = false;
-  bool enableAp = false;
+  wifi_enableSta = false;
+  wifi_enableAp = false;
   if(strlen(wifi_ssid) > 0) {
-    enableSta = true;
+    wifi_enableSta = true;
   } else {
     if (WiFi.isConnected()) {
       WiFi.disconnect();
@@ -105,19 +108,19 @@ void reconfigureWifi() {
   }
   
   if(strlen(hotspot_ssid) > 0) {
-    enableAp = true;
+    wifi_enableAp = true;
   } else {
     WiFi.softAPdisconnect();
     Serial.println("WiFi: Ap: disabled");
   }
   
-  if(enableSta && enableAp) {
+  if(wifi_enableSta && wifi_enableAp) {
     WiFi.mode(WIFI_AP_STA);
     Serial.println("WiFi: AP & STA");
-  } else if (enableSta) {
+  } else if (wifi_enableSta) {
     WiFi.mode(WIFI_STA);
     Serial.println("WiFi: STA");
-  } else if (enableAp) {
+  } else if (wifi_enableAp) {
     WiFi.mode(WIFI_AP);
     Serial.println("WiFi: AP");
   } else {
@@ -127,7 +130,7 @@ void reconfigureWifi() {
     return;
   }
 
-  if (enableSta) {
+  if (wifi_enableSta) {
     String ssStr = wifi_ssid;
     if (strlen(wifi_password) > 0) {
       String pwStr = wifi_password;
@@ -164,7 +167,7 @@ void reconfigureWifi() {
       }
     }
   }
-  if (enableAp) {
+  if (wifi_enableAp) {
     if (strlen(hotspot_password) > 0) {
       WiFi.softAP(hotspot_ssid, hotspot_password);
       Serial.print("WiFi: Ap: SSID [");
@@ -185,6 +188,16 @@ void reconfigureWifi() {
 }
 
 bool wifi_isApClient(IPAddress& ip) {
-  return false;
+  if(!wifi_enableAp) {
+    // AP is not enabled
+    return false;
+  }
+
+  IPAddress myIP = WiFi.softAPIP();
+
+  // client & AP subnet (24bit, first 3 bytes) must match
+  return myIP[0] == ip[0] 
+    && myIP[1] == ip[1] 
+    && myIP[2] == ip[2];
 }
 
