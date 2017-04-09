@@ -32,6 +32,7 @@ public:
     String request_etag = server.header(ETAG_CLIENT_HEADER);
     if (_etag_value == request_etag) {
       server.send(304);
+      server.client().stop();
       return true;
     }
     server.sendHeader(ETAG_SERVER_HEADER, _etag_value);

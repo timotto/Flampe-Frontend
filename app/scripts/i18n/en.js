@@ -56,6 +56,7 @@ angular.module('flampeFrontendAngularApp')
       WIFI_CLIENT_TEXT: 'WiFi client',
       WIFI_CLIENT_TITLE: 'Connect to your home WiFi',
       WIFI_CLIENT_CONTENT: 'Enter the credentials for your home WiFi to use this web interface and connect your home automation',
+      WIFI_CONNECTED_AS: 'Connected as',
       HOTSPOT_TITLE: 'WiFi hotspot',
       HOTSPOT_TEXT: 'Flamp creates this network if none are found',
       HOTSPOT_CONTENT: 'This will help you set up your Flampe in another environment or when you change your home WiFi.',

@@ -139,13 +139,21 @@ void create_status_object(JsonObject& jsonStatus) {
   sensor["xdir"] = sensor_gesture_x_direction;
   sensor["ydir"] = sensor_gesture_y_direction;
 
-  JsonObject& wifi = jsonStatus.createNestedObject("wifi");
-  wifi["ssid"] = wifi_ssid;
-  wifi["password"] = wifi_password;
+  JsonObject& wifi = jsonStatus.createNestedObject(JS_wifi);
+  wifi[JS_ssid] = wifi_ssid;
+  wifi[JS_password] = wifi_password;
+  wifi[JS_connected] = wifi_connected;
+  if(wifi_connected) {
+    wifi[JS_ip] = toStringIp(WiFi.localIP());
+    wifi[JS_name] = FLAMPE_ID;
+  }
   
-  JsonObject& hotspot = jsonStatus.createNestedObject("hotspot");
-  hotspot["ssid"] = hotspot_ssid;
-  hotspot["password"] = hotspot_password;
+  JsonObject& hotspot = jsonStatus.createNestedObject(JS_hotspot);
+  hotspot[JS_ssid] = hotspot_ssid;
+  hotspot[JS_password] = hotspot_password;
+  if(wifi_enableAp) {
+    hotspot[JS_ip] = toStringIp(WiFi.softAPIP());
+  }
   
   JsonObject& mqtt = jsonStatus.createNestedObject("mqtt");
   mqtt["host"] = mqtt_server;
@@ -485,6 +493,16 @@ void status_broadcastUpdate(const char* key, int value) {
   sprintf(textCopy, "%d", value);
 
   status_broadcastUpdate(key, textCopy, strlen(textCopy));
+}
+
+/** IP to String? */
+String toStringIp(IPAddress ip) {
+  String res = "";
+  for (int i = 0; i < 3; i++) {
+    res += String((ip >> (8 * i)) & 0xFF) + ".";
+  }
+  res += String(((ip >> 8 * 3)) & 0xFF);
+  return res;
 }
 
 

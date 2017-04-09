@@ -8,9 +8,6 @@ int wifiConnectionFails = 0;
 int wifi_apClientsConnected = 0;
 bool wifi_apClientsConnectedChanged = false;
 
-bool wifi_enableSta = false;
-bool wifi_enableAp = false;
-
 void setup_wifi() {
   WiFi.hostname(FLAMPE_ID);
   WiFi.onEvent(WiFiEvent);
@@ -46,6 +43,7 @@ void WiFiEvent(WiFiEvent_t event) {
       // almost there
       break;
     case WIFI_EVENT_STAMODE_GOT_IP:
+      wifi_connected = true;
       wifiConnectionFails = 0;
       Serial.println("WiFi connected");
       Serial.println("IP address: ");
@@ -53,6 +51,7 @@ void WiFiEvent(WiFiEvent_t event) {
       // TODO turn off AP with gracetime
       break;
     case WIFI_EVENT_STAMODE_DISCONNECTED:
+      wifi_connected = false;
       if (wifiConnectionFails++ > 0) {
         // know already
         if (wifiConnectionFails == 3) {

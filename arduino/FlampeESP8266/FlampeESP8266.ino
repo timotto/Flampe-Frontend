@@ -3,6 +3,7 @@
 #include <FS.h>                   //this needs to be first, or it all crashes and burns...
 // because auf color types
 #include <FastLED.h>
+#include "textkeys.h"
 
 char FLAMPE_ID[15];
 
@@ -37,6 +38,9 @@ bool mqtt_publish_state;
 bool mqtt_publish_gesture;
 char wifi_ssid[40];
 char wifi_password[40];
+bool wifi_connected = false;
+bool wifi_enableSta = false;
+bool wifi_enableAp = false;
 char hotspot_ssid[40];
 char hotspot_password[40];
 
@@ -75,4 +79,20 @@ void loop() {
   // there's no loop_led() because setup_led() attaches a 10ms Ticker
 }
 
+class JsonPush {
+public:
+  JsonPush() : rootNode(buffer.createObject()), dataNode(rootNode.createNestedObject(JS_data)) {
+    rootNode[JS_action] = JS_push;
+  }
+  JsonObject& root() { return rootNode; }
+  JsonObject& data() { return dataNode; }
+  void broadcast() {
+    status_broadcastUpdate(rootNode);
+  }
+  
+protected:
+  DynamicJsonBuffer buffer;
+  JsonObject& rootNode;
+  JsonObject& dataNode;
+};
 

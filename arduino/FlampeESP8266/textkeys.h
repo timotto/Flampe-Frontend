@@ -9,7 +9,10 @@ const int paletteTextkeysCount = 10;
 const char *JS_status = "status";
 const char *JS_connected = "connected";
 const char *JS_connection = "connection";
+const char *JS_hotspot = "hotspot";
 const char *JS_wifi = "wifi";
+const char *JS_name = "name";
+const char *JS_ip = "ip";
 const char *JS_sta = "sta";
 const char *JS_ap = "ap";
 const char *JS_setup = "setup";
@@ -43,8 +46,8 @@ const char *WS_actionGet = "get";
 const char *WS_actionPing = "ping";
 const char *WS_actionPong = "pong";
 
-const char* TK_colorSsid = "ssid";
-const char* TK_colorPassword = "password";
+const char* JS_ssid = "ssid";
+const char* JS_password = "password";
 
 const char* TK_colorRed = "red";
 const char* TK_colorGreen = "green";

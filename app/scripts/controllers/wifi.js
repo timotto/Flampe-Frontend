@@ -20,15 +20,26 @@ angular.module('flampeFrontendAngularApp')
       }, true);
     });
 
+    function confirmState(stateName) {
+      angular.copy($scope.state[stateName], $rootScope.state[stateName]);
+    }
+
     $scope.connectWifi = function(ev) {
-      youAreConnectedWarning(ev, 'wifi');
+      if ($scope.state.connection === 'sta') {
+        youAreConnectedWarning(ev, 'wifi');
+      } else {
+        confirmState('wifi');
+      }
     };
     $scope.saveHotspot = function(ev) {
-      youAreConnectedWarning(ev, 'hotspot');
+      if ($scope.state.connection === 'ap') {
+        youAreConnectedWarning(ev, 'hotspot');
+      } else {
+        confirmState('hotspot');
+      }
     };
     $scope.savePasswords = function() {
-      var stateName = 'access';
-      angular.copy($scope.state[stateName], $rootScope.state[stateName]);
+      confirmState('access');
     };
 
     function youAreConnectedWarning(ev,stateName) {
@@ -43,7 +54,7 @@ angular.module('flampeFrontendAngularApp')
           .cancel(translations.CANCEL);
 
         $mdDialog.show(confirm).then(function() {
-          angular.copy($scope.state[stateName], $rootScope.state[stateName]);
+          confirmState(stateName);
         }, function() {
           angular.copy($rootScope.state[stateName], $scope.state[stateName]);
         });

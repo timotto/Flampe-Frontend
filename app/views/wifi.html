@@ -20,6 +20,7 @@
         <input ng-model="state.wifi.password">
       </md-input-container>
     </div>
+    <div ng-if="state.wifi.connected">{{'WIFI_CONNECTED_AS'|translate}} <a href="{{'http://'+state.wifi.ip+'/'}}">{{state.wifi.ip}}</a> - <a href="{{'http://'+state.wifi.name+'/'}}">{{state.wifi.name}}</a></div>
   </md-card-content>
   <md-card-actions layout="row" layout-align="end center">
     <md-button ng-click="connectWifi($event)">{{'CONNECT'|translate}}</md-button>

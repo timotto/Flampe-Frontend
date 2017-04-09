@@ -63,7 +63,7 @@ angular.module('flampeFrontendAngularApp')
       if ($scope.stripcounts.indexOf($scope.state.setup.stripcount) === -1) {
         $scope.stripcountindex = Math.floor($scope.stripcounts.length / 2);
         $scope.state.setup.stripcount = $scope.stripcounts[$scope.stripcountindex];
-        console.log('address! index=%d count=%d',$scope.stripcountindex,$scope.state.setup.stripcount)
+        console.log('address! index=%d count=%d',$scope.stripcountindex,$scope.state.setup.stripcount);
       }
     });
   }]);

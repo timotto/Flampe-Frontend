@@ -205,12 +205,10 @@ void led_hideMessage() {
 
 void adjustBrightness(int direction) {
   setBrightness(brightness + direction);
-  DynamicJsonBuffer statusJsonBuffer;
-  JsonObject& jsonStatus = statusJsonBuffer.createObject();
-  jsonStatus["action"] = "push";
-  JsonObject& data = jsonStatus.createNestedObject("data");
-  data[JS_brightness] = brightness;
-  status_broadcastUpdate(jsonStatus);
+
+  JsonPush push;
+  push.data()[JS_brightness] = brightness;
+  push.broadcast();
 }
 
 void setBrightness(int value) {
@@ -223,13 +221,10 @@ int led_getBrightness() {
 
 void adjustPalette(int direction) {
   setPalette(currentPalette + direction);
-  DynamicJsonBuffer statusJsonBuffer;
-  JsonObject& jsonStatus = statusJsonBuffer.createObject();
-  jsonStatus["action"] = "push";
-  JsonObject& data = jsonStatus.createNestedObject("data");
-  JsonObject& anim = jsonStatus.createNestedObject("animation");
-  anim[JS_currentPalette] = paletteTextkeys[currentPalette];
-  status_broadcastUpdate(jsonStatus);
+
+  JsonPush push;
+  push.data().createNestedObject(JS_animation)[JS_currentPalette] = paletteTextkeys[currentPalette];
+  push.broadcast();
 }
 
 void setIdlePalette(int index) {
@@ -282,13 +277,9 @@ void adjustAnimation(int direction) {
   
   int nindex = (len + direction + currentAnimation) % len;
   setAnimation(nindex);
-  DynamicJsonBuffer statusJsonBuffer;
-  JsonObject& jsonStatus = statusJsonBuffer.createObject();
-  jsonStatus["action"] = "push";
-  JsonObject& data = jsonStatus.createNestedObject("data");
-  JsonObject& anim = jsonStatus.createNestedObject("animation");
-  anim[JS_currentAnimation] = animationTextkeys[currentAnimation];
-  status_broadcastUpdate(jsonStatus);
+  JsonPush push;
+  push.data().createNestedObject(JS_animation)[JS_currentAnimation] = animationTextkeys[currentAnimation];
+  push.broadcast();
 }
 
 void setAnimation(int index) {
